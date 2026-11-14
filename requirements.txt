@@ -1,0 +1,6 @@
+# Uses the existing isolated tutorial-hf environment; no GPU inference required.
+numpy==1.26.4
+scipy==1.14.1
+soundfile==0.13.1
+requests>=2.32,<3
+h5py==3.11.0

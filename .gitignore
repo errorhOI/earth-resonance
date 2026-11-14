@@ -1,0 +1,36 @@
+# Keep the current app, not local experiments, environments, logs or recordings.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/COLLABORATION.md
+!/requirements.txt
+!/server.py
+!/profile_service.py
+!/remote_profile.py
+!/extract_profiles.py
+!/build_demo.py
+!/ray_model.py
+!/atmospheric_layers.py
+!/build_atmosphere_overlay.py
+!/verify_*.cjs
+!/launch-sound-lab.ps1
+!/Open Sound Lab.cmd
+!/dist/
+!/data/
+/data/*
+!/data/vertical-grid.json
+!/data/profiles.json
+!/data/gcpy-LICENSE.txt
+/dist/audio/
+/dist/assets/*.mp4
+/dist/assets/*.webm
+/dist/assets/*.glb
+/dist/audio-data.js
+/dist/sound-lab-check.html
+/dist/location-compare.js
+**/__pycache__/
+**/.env
+**/.env.*
+**/*.log
+**/*.pid
