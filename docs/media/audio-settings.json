@@ -1,0 +1,106 @@
+{
+  "description": "Offline 16-column scans of saved NASA visualization frames using the unchanged app synthesis and WAV export functions. Not a live video recording. No AI, melody template, EQ, reverb or atmospheric delay.",
+  "created": "2026-11-14",
+  "sampleRate": 48000,
+  "channels": 2,
+  "format": "PCM 16-bit WAV",
+  "scanSpeed": 1,
+  "secondsPerColumn": 0.25,
+  "sourceCode": {
+    "dist/region-sound.js": "7b8645b30a3a41b3dfc652d13a35212c23b60d787c2ec7d8c503b28cb331fbf7",
+    "dist/sound-dsp.js": "dc3d859ed5ec0f0f7c4b5ca45bae1ef7f193535d9eb2ed7747ad5b70f9effca3"
+  },
+  "examples": [
+    {
+      "file": "ocean-bells.wav",
+      "kind": "ocean",
+      "voice": "bells",
+      "poster": "ocean-poster.jpg",
+      "box": {
+        "left": 0.3,
+        "right": 0.42,
+        "top": 0.22,
+        "bottom": 0.44
+      },
+      "source": "https://svs.gsfc.nasa.gov/3912/",
+      "inputFile": "dist/assets/ocean-poster.jpg",
+      "inputSha256": "1cfd179983eb92df3d91cfa41a829ca2b9c5c42a02496af819c530ee4625edd1",
+      "duration": 4.5,
+      "peak": 0.09543320536613464,
+      "rms": 0.01582535851876175,
+      "notes": [
+        52,
+        64,
+        69,
+        73,
+        78,
+        76,
+        49,
+        71,
+        47,
+        61,
+        54,
+        59
+      ],
+      "outputSha256": "daa8750950ebe1e132fa52389579d7ab0a73912133735589fd70263c9d25778d"
+    },
+    {
+      "file": "ocean-soft-synth.wav",
+      "kind": "ocean",
+      "voice": "soft_synth",
+      "poster": "ocean-poster.jpg",
+      "box": {
+        "left": 0.3,
+        "right": 0.42,
+        "top": 0.22,
+        "bottom": 0.44
+      },
+      "source": "https://svs.gsfc.nasa.gov/3912/",
+      "inputFile": "dist/assets/ocean-poster.jpg",
+      "inputSha256": "1cfd179983eb92df3d91cfa41a829ca2b9c5c42a02496af819c530ee4625edd1",
+      "duration": 4.5,
+      "peak": 0.10267872363328934,
+      "rms": 0.019234297236256276,
+      "notes": [
+        52,
+        64,
+        69,
+        73,
+        78,
+        76,
+        49,
+        71,
+        47,
+        61,
+        54,
+        59
+      ],
+      "outputSha256": "192487f776fac72c682d6005523f1402819ff331800ce50d710796aa7c6f1df4"
+    },
+    {
+      "file": "aerosols-orchestral.wav",
+      "kind": "aerosols",
+      "voice": "orchestral",
+      "poster": "aerosols-video-poster.jpg",
+      "box": {
+        "left": 0.4,
+        "right": 0.62,
+        "top": 0.32,
+        "bottom": 0.57
+      },
+      "source": "https://svs.gsfc.nasa.gov/5572/",
+      "inputFile": "dist/assets/aerosols-video-poster.jpg",
+      "inputSha256": "b31b4214db55c3551ca1051360061bada5c05574362fa9bff469ef53a711424f",
+      "duration": 4.5,
+      "peak": 0.09420695900917053,
+      "rms": 0.024577838880528214,
+      "notes": [
+        48,
+        55,
+        69,
+        62
+      ],
+      "outputSha256": "6cf194f7e2374f19385dcf2b1797e5735e932046f4bbb52b5b97d4bf32942280"
+    }
+  ]
+}

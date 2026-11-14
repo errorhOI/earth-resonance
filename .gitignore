@@ -17,6 +17,9 @@
 !/launch-sound-lab.ps1
 !/Open Sound Lab.cmd
 !/dist/
+!/docs/
+/docs/*
+!/docs/media/
 !/data/
 /data/*
 !/data/vertical-grid.json

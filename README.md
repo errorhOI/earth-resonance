@@ -4,6 +4,41 @@ Cosmic Siblings: Hoi Wen Han and Hoi Shao Xuan Crystal.
 
 Pick a patch of NASA ocean or aerosol imagery and hear its colors as musical notes. A moving scan line shows the pixels being played. Compare saved regions, play them in order or together, and shape the sound in Sound Lab. A separate atmosphere model shows how temperature and wind can bend a sound path.
 
+## See the app
+
+Choose a region on the map. Its changing colors become musical notes.
+
+![Ocean map with a selected patch and modeled sound start and arrival markers](docs/media/map-selection.png)
+
+Compare places side by side. The peaks represent image brightness, not mountains.
+
+![Ocean and aerosol region cards with brightness surfaces and atmospheric paths](docs/media/region-comparison.png)
+
+<details>
+<summary>Sound Lab and atmosphere views</summary>
+
+Adjust bass, treble and smoothness, then save your favorite settings.
+
+![Sound Lab with equalizer, smoothing and effect controls](docs/media/sound-lab.png)
+
+Explore how temperature and wind bend the modeled sound path from A to a different location, B.
+
+![Atmospheric sound path with direction, launch angle, distance, maximum height and playback delay](docs/media/sound-path.png)
+
+</details>
+
+## Hear examples
+
+Download a WAV file and open it in your audio player. Each example is a 4.5-second scan of a saved NASA visualization frame, generated with the app's current sound engine at 1× scan speed. Echo and effects are off. In the app, the video keeps changing while you listen.
+
+| Example | Audio |
+| --- | --- |
+| Ocean with bells | [Download WAV](docs/media/ocean-bells.wav?raw=true) |
+| Same ocean patch with soft synth | [Download WAV](docs/media/ocean-soft-synth.wav?raw=true) |
+| Aerosols with a synthesized orchestral voice | [Download WAV](docs/media/aerosols-orchestral.wav?raw=true) |
+
+These are synthesized interpretations, not recordings of Earth. [Sample settings and source hashes](docs/media/audio-settings.json) document the inputs. Ocean imagery: [NASA SVS / ECCO2](https://svs.gsfc.nasa.gov/3912/). Aerosol imagery: [NASA SVS / GMAO](https://svs.gsfc.nasa.gov/5572/). Screenshots show this app using those visualizations.
+
 ## Run locally
 
 Use Python 3.11 or 3.12. No AI checkpoint or GPU is needed.
@@ -38,7 +73,7 @@ The short Sweden practice preset credits C418 / Daniel Rosenfeld and a publisher
 
 ## Repository layout
 
-`dist/` contains the current browser app, embedded imagery and calculated example profiles. Python files provide geographic profile lookup and ray calculations. `data/` holds the vertical grid and source metadata. Large duplicate source movies, old model experiments, logs and generated audio are excluded. The embedded JavaScript media bundles are included so a clone can display the imagery.
+`dist/` contains the current browser app, embedded imagery and calculated example profiles. Python files provide geographic profile lookup and ray calculations. `data/` holds the vertical grid and source metadata. `docs/media/` contains the README screenshots and short audio examples. Large duplicate source movies, old model experiments, logs and other generated audio are excluded. The embedded JavaScript media bundles are included so a clone can display the imagery.
 
 `build_demo.py --data-only` rebuilds the example profiles. Historical audio-export mode and source-media preparation require the separate research workspace and are not needed to run this app.
 
