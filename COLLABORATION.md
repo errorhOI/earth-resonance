@@ -59,3 +59,11 @@ Use actual current commits. Do not backdate commits or present this exercise as 
 Wen Han maintains the sound and model behaviour. Before pushing a function change, check that Stop ends playback, Loop stays off when unchecked, and the bright pulse reaches B with the delayed sound. Keep the selected regions and scan speed after refresh.
 
 Useful files: `dist/region-sound.js`, `dist/live-region-audio.js`, `dist/music-nodes.js`, `dist/sound-timing.js`, and `ray_model.py`.
+
+## UI practice checkpoint
+
+Crystal maintains the layout and labels. Keep headings short, controls readable, and map colours visible. Check region cards at narrow and wide window sizes. Keep model explanations inside Sources & method.
+
+Useful files: `dist/index.html`, `dist/style.css`, and `dist/region-cards.css`. Coordinate changes to `dist/region-cards.js` with Wen Han because it includes both drawing and behaviour.
+
+This handoff note is a new practice contribution, not evidence of who authored the earlier imported application.
