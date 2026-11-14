@@ -5,6 +5,12 @@
 !/README.md
 !/COLLABORATION.md
 !/requirements.txt
+!/requirements-hosting.txt
+!/.python-version
+!/render.yaml
+!/web_app.py
+!/prepare_hosting.py
+!/verify_hosting.py
 !/server.py
 !/profile_service.py
 !/remote_profile.py
@@ -25,6 +31,8 @@
 !/data/vertical-grid.json
 !/data/profiles.json
 !/data/gcpy-LICENSE.txt
+!/data/hosted-fields.npz
+!/data/hosted-fields.json
 /dist/audio/
 /dist/assets/*.mp4
 /dist/assets/*.webm

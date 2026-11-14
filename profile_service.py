@@ -18,6 +18,24 @@ FIELDS=None
 def load_fields():
     global FIELDS
     if FIELDS is not None:return FIELDS
+    bundle=ROOT/'data/hosted-fields.npz'
+    if bundle.exists():
+        import hashlib
+        manifest=json.loads(bundle.with_suffix('.json').read_text(encoding='utf-8'))
+        if hashlib.sha256(bundle.read_bytes()).hexdigest()!=manifest['sha256']:
+            raise ValueError('Atmospheric bundle checksum mismatch.')
+        with np.load(bundle,allow_pickle=False) as archive:
+            values={key:archive[key] for key in ['lat','lon','T','QV','PS','U','V']}
+        for key,array in values.items():
+            if list(array.shape)!=manifest['shapes'][key] or not np.isfinite(array).all():
+                raise ValueError('Invalid atmospheric bundle.')
+        FIELDS=values
+        return values
+    FIELDS=load_source_fields()
+    return FIELDS
+
+def load_source_fields():
+    """Decode the original source fields, also used to reproduce the hosted bundle."""
     values={}
     for kind,size in [('I3',19224099),('A3dyn',28185683)]:
         name=f'MERRA2.20250101.{kind}.4x5.nc4'
@@ -31,7 +49,6 @@ def load_fields():
             for key in (['T','QV','PS'] if kind=='I3' else ['U','V']):
                 times=[0,1] if kind=='I3' else [0]
                 values[key]=np.mean([value(f[key],(t,)) for t in times],axis=0)
-    FIELDS=values
     return values
 
 @lru_cache(maxsize=32)

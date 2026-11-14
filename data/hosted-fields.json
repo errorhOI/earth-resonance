@@ -1,0 +1,51 @@
+{
+  "sha256": "26ba4d017ccc28b72c22a854329e83076841806e1ae771e423cafec335f1a409",
+  "shapes": {
+    "lat": [
+      46
+    ],
+    "lon": [
+      72
+    ],
+    "T": [
+      72,
+      46,
+      72
+    ],
+    "QV": [
+      72,
+      46,
+      72
+    ],
+    "PS": [
+      46,
+      72
+    ],
+    "U": [
+      72,
+      46,
+      72
+    ],
+    "V": [
+      72,
+      46,
+      72
+    ]
+  },
+  "dataset": "NASA GMAO MERRA-2, regridded by GEOS-Chem, 4 x 5 degrees",
+  "time": "2025-01-01T01:30:00Z",
+  "sources": [
+    "https://geos-chem.s3.amazonaws.com/GEOS_4x5/MERRA2/2025/01/MERRA2.20250101.I3.4x5.nc4",
+    "https://geos-chem.s3.amazonaws.com/GEOS_4x5/MERRA2/2025/01/MERRA2.20250101.A3dyn.4x5.nc4"
+  ],
+  "processing": "Same decoded arrays as profile_service: T, QV, PS mean of 00:00 and 03:00 instantaneous fields; U, V 00:00-03:00 means. No quantization. Heights, layers and rays calculated on request.",
+  "units": {
+    "lat": "degrees north",
+    "lon": "degrees east",
+    "T": "K",
+    "QV": "kg/kg",
+    "PS": "Pa",
+    "U": "m/s",
+    "V": "m/s"
+  }
+}

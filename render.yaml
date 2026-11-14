@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: earth-resonance
+    runtime: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements-hosting.txt && python prepare_hosting.py
+    startCommand: python web_app.py
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: OPENBLAS_NUM_THREADS
+        value: "1"
+      - key: OMP_NUM_THREADS
+        value: "1"
