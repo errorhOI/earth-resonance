@@ -1,0 +1,60 @@
+{
+  "glb_sha256": "2ea2524f95fbeb48eb6d7110ecec425b7674dcf48eb9b0ad3233dc56bbed4977",
+  "vertices": 4753,
+  "triangles": 9216,
+  "ocean": {
+    "source": "https://svs.gsfc.nasa.gov/3912/",
+    "mirror": "https://ecco-group.org/media-more.htm?id=20",
+    "source_video_sha256": "d1bc29525d3ee05059993f30878f5f9651143e5db8f9cdec938db744a796a4ef",
+    "source_video_seconds": [
+      0,
+      68.63333333333334
+    ],
+    "output_dimensions": [
+      1200,
+      600
+    ],
+    "output_fps": 30,
+    "output_audio": false,
+    "output_sha256": "d34935453f9b5e890e953654514ecc16d5ad027f2475d68ead700a8a7cc084c7",
+    "colour_meaning": "Sea-surface temperature: blue cooler, red warmer. Rendering intensity does not measure current speed.",
+    "modification": "Full saved ECCO2 animation. All video frames retained without re-encoding, resizing, trimming or retiming. Original audio omitted. MP4 metadata moved to the front for playback.",
+    "output_frames": 2059,
+    "period": "25 March 2007–3 March 2008 (NASA full source visualization)"
+  },
+  "aerosols": {
+    "source": "https://svs.gsfc.nasa.gov/5572/",
+    "original_video": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005572/Aerosols_6480x3240_30p.mp4",
+    "mirror_page": "https://commons.wikimedia.org/wiki/File:GEOS_Aerosols_(SVS5572_-_6480x3240_30p).webm",
+    "downloaded_video": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b3/GEOS_Aerosols_%28SVS5572_-_6480x3240_30p%29.webm/GEOS_Aerosols_%28SVS5572_-_6480x3240_30p%29.webm.1080p.vp9.webm",
+    "source_sha256": "3bc988f4238b7c2569901e8575452a556de821df74d5b518b593a9665bab86b3",
+    "output_sha256": "3bc988f4238b7c2569901e8575452a556de821df74d5b518b593a9665bab86b3",
+    "output_dimensions": [
+      1920,
+      960
+    ],
+    "output_fps": 30,
+    "playback_audio": false,
+    "period": "1 August–14 September 2024 (NASA visualization description)",
+    "credits": "NASA GMAO / Scientific Visualization Studio; Joseph V. Ardizzone, Helen-Nicole Kostis; scientific consulting Lesley Ott. Technical support Laurence Schuler, Ian Jones, Ella Kaplan.",
+    "rights": "NASA visualization; Wikimedia mirror identifies it as public domain (PD-NASA).",
+    "modification": "Wikimedia 1920 × 960 VP9 derivative used unchanged, with no further resizing or re-encoding. Video playback muted; no original audio used.",
+    "colour_meaning": "Blue/cyan sea salt; pink/magenta dust; orange/red smoke; green sulfate. Pixel brightness is not a retrieved concentration."
+  },
+  "audio": "Synthesized from selected image/video region colors; live video sampled up to four times per second. No AI model or training.",
+  "globe": "UV sphere in GLB 2.0 with real NASA still texture. App supplies video frames separately.",
+  "sound_lab": {
+    "image_to_audio_mapping": true,
+    "ai_model": null,
+    "training": false,
+    "effects": [
+      "EQ",
+      "smoothing",
+      "dynamics",
+      "reverb",
+      "stereo width",
+      "low octave"
+    ],
+    "atmosphere": "Independent NASA MERRA-2 profile from 1 January 2025; model delay divided by 1000, artistic amplitude 0.25."
+  }
+}
