@@ -53,3 +53,9 @@ git config user.email "356622748+jamesgoime-lgtm@users.noreply.github.com"
 ```
 
 Use actual current commits. Do not backdate commits or present this exercise as past development history.
+
+## Functions practice checkpoint
+
+Wen Han maintains the sound and model behaviour. Before pushing a function change, check that Stop ends playback, Loop stays off when unchecked, and the bright pulse reaches B with the delayed sound. Keep the selected regions and scan speed after refresh.
+
+Useful files: `dist/region-sound.js`, `dist/live-region-audio.js`, `dist/music-nodes.js`, `dist/sound-timing.js`, and `ray_model.py`.
