@@ -8,7 +8,8 @@ const NodeScore={
  valid:score=>score&&Number.isFinite(score.bpm)&&score.bpm>=30&&score.bpm<=160&&Array.isArray(score.steps)&&score.steps.length>0&&score.steps.length<=128&&score.steps.every(s=>(s.midi===null||(Number.isInteger(s.midi)&&s.midi>=36&&s.midi<=84))&&Number.isFinite(s.beats)&&s.beats>=.25&&s.beats<=4&&typeof s.region==='string'),
  assignments(score,regions){
   let noteIndex=0;
-  return score.steps.map(s=>s.midi===null?null:s.region==='auto'?regions[noteIndex++%regions.length]:regions.find(r=>this.identity(r)===s.region));
+  // Older templates may contain fixed region IDs; all notes now alternate automatically.
+  return score.steps.map(s=>s.midi===null?null:regions[noteIndex++%regions.length]);
  },
  resolve(score,regions){
   if(!this.valid(score))throw Error('Choose valid notes and tempo.');
@@ -17,7 +18,7 @@ const NodeScore={
   const assignments=this.assignments(score,regions);
   return score.steps.map((s,i)=>{if(s.midi===null)return {...s,region:null};
    const region=assignments[i];
-   if(!region)throw Error('A melody region is missing or unchecked. Reassign it below.');
+   if(!region)throw Error('Select a region node first.');
    return {...s,region};});
  }
 };
@@ -45,11 +46,8 @@ window.NodeScore=NodeScore;
    note.onchange=()=>{step.midi=note.value==='rest'?null:Number(note.value);change();draw()};
    const beats=document.createElement('select');beats.setAttribute('aria-label',`Step ${i+1} beats`);
    for(let b=.25;b<=4;b+=.25)beats.append(option(b,`${b} beat${b===1?'':'s'}`));beats.value=step.beats;beats.onchange=()=>{step.beats=Number(beats.value);change()};
-   const region=document.createElement('select');region.setAttribute('aria-label',`Step ${i+1} region`);
-   region.append(option('auto',step.midi===null?'Rest':step.region==='auto'?(assignments[i]?`${regionLabel(assignments[i])} (auto)`:'Select a region'):'Automatic'));
-   for(const r of regions){region.append(option(NodeScore.identity(r),regionLabel(r)))}
-   if(step.region!=='auto'&&!regions.some(r=>NodeScore.identity(r)===step.region))region.append(option(step.region,'Missing region'));
-   region.value=step.midi===null?'auto':step.region;region.disabled=step.midi===null;region.onchange=()=>{step.region=region.value;change();draw()};
+   const region=document.createElement('output');region.className='melody-region';region.setAttribute('aria-label',`Step ${i+1} region`);
+   region.textContent=step.midi===null?'Rest':assignments[i]?regionLabel(assignments[i]):'Select a region';
    const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label',`Remove step ${i+1}`);remove.disabled=score.steps.length===1;remove.onclick=()=>{score.steps.splice(i,1);change();draw()};
    row.append(number,note,beats,region,remove);rows.append(row);
   });

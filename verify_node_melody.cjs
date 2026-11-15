@@ -12,9 +12,10 @@ assert.equal(score.assignments(phrase,[regions[1]])[1],regions[1],'Labels follow
 assert.equal(score.assignments(phrase,[regions[1],regions[0]])[1],regions[1],'Labels follow node order');
 assert.equal(score.assignments(phrase,[])[1],undefined,'Empty selection has no invented assignment');
 assert(score.valid(JSON.parse(JSON.stringify(phrase))),'Score survives storage round trip');
-phrase.steps[1].region=score.identity(regions[1]);assert.equal(score.resolve(phrase,regions)[1].region,regions[1]);
-assert.equal(score.assignments(phrase,regions)[2],regions[0],'Explicit assignments do not advance automatic alternation');
-assert.throws(()=>score.resolve(phrase,[regions[0]]),/missing/);assert.throws(()=>score.resolve({bpm:0,steps:[]},regions));
+phrase.steps[1].region=score.identity(regions[1]);assert.equal(score.resolve(phrase,regions)[1].region,regions[0],'Legacy fixed regions now alternate automatically');
+assert.equal(score.assignments(phrase,regions)[2],regions[1],'Every note advances automatic alternation');
+assert.equal(score.resolve(phrase,[regions[0]])[1].region,regions[0],'Old templates work when a previously fixed region is removed');
+assert.throws(()=>score.resolve(phrase,[]),/Select a region/);assert.throws(()=>score.resolve({bpm:0,steps:[]},regions));
 const feature=(warmth,brightness)=>({warmth,brightness,coverage:1,types:[1,0,0,0],colors:[]});
 const blue=feature(0,.2),red=feature(1,.8),neutral={...blue,coverage:0};
 const spectral=(a,hz)=>{let re=0,im=0;for(let i=0;i<a.length;i++){const p=2*Math.PI*hz*i/48000;re+=a[i]*Math.cos(p);im+=a[i]*Math.sin(p)}return Math.hypot(re,im)};
