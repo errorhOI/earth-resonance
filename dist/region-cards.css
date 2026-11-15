@@ -83,20 +83,7 @@
 .expanded-volume .control-label{display:flex;align-items:center;gap:6px}
 .expanded-volume #volumeValue{padding:0;min-width:30px;font-size:15px}
 .expanded-volume #volume{width:82px;height:16px}
-#soundLab .dialog-header #savePreset{margin-left:auto;border:1px solid #45463c;padding:5px 9px;min-height:38px;font-size:15px}
-#savePresetDialog{max-width:380px;padding:22px}
-#savePresetDialog h2{margin:0;font-size:25px}
-#presetName{width:100%;padding:9px 10px;font-size:15px}
-#presetSaveStatus:empty{display:none}
-#soundLab .dialog-header #managePresets{font-size:22px;min-height:38px;padding:0 6px;line-height:1}
 #soundLab .dialog-header{gap:10px}
-#managePresetsDialog{max-width:380px;padding:22px}
-#managePresetsDialog h2{margin:0;font-size:25px}
-#renamedPreset{width:100%;padding:9px 10px;font-size:15px}
-#managePresetStatus:empty{display:none}
-.preset-manage-actions{display:flex;align-items:center;gap:8px;margin-top:22px;flex-wrap:wrap}
-.preset-manage-actions .primary{margin:0 0 0 auto;background:var(--accent);color:#161711}
-#undoPresetDelete[hidden]{display:none}
 
 #emptyRegions #chooseRegionFromEmpty{border:0;background:transparent;color:inherit;font:inherit;padding:8px;cursor:pointer}
 #emptyRegions #chooseRegionFromEmpty:hover{text-decoration:underline;text-underline-offset:3px}

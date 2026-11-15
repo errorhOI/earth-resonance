@@ -99,8 +99,6 @@
  $('loop').onchange=()=>{try{localStorage.setItem(loopKey,String($('loop').checked))}catch{}if(!window.musicSequence?.running){if(source)source.loop=$('loop').checked;live?.setLoop?.($('loop').checked)}};$('balance').onchange=()=>{if(playing||pendingPlay)play(position())};
  $('followVideo').onchange=()=>{const was=playing||pendingPlay,r=window.regionSelection;if(!$('followVideo').checked&&r?.liveFeatures){window.regionSelection={...r,features:r.liveFeatures,frame:r.liveFrame,key:r.key+'-frame-'+RegionSound.fingerprint(r.liveFeatures)}}stop();if(was)play()};
  $('voice').onchange=()=>{const was=playing||pendingPlay;stop();if(was)play()};
- function saveFile(raw,name){const url=URL.createObjectURL(new Blob([raw],{type:'audio/wav'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
- $('saveMix').onclick=async()=>{const s=snapshot();if(s.region?.liveFeatures&&$('followVideo').checked)s.region={...s.region,features:s.region.liveFeatures,frame:s.region.liveFrame,key:s.region.key+'-frame-'+RegionSound.fingerprint(s.region.liveFeatures)};$('saveMix').disabled=true;try{const raw=await original(s.voice,s.region),rendered=await mix(s);saveFile(DSP.wav(rendered,DSP.level(rendered,raw,s.balanced)),s.voice+'-frame-mix.wav');$('labStatus').textContent='Frame mix saved'}catch(e){$('labStatus').textContent=e.message}finally{$('saveMix').disabled=false}};
  function playback(){
   const audible=playing&&ctx?Math.max(0,SoundTiming.now(ctx)-startTime+offset):0;
   const state={active:playing,seconds:source?.loop?audible%(activePath?.duration||1):audible,...activePath};
@@ -120,7 +118,6 @@
   playTogether:(regions,onComplete)=>{stop();setMode('processed',false);return play(0,{regions,onScanComplete:onComplete})},
   playMelody:(steps,bpm,onComplete)=>{stop();setMode('processed',false);return play(0,{melody:{steps,bpm},onScanComplete:onComplete})},
   playScan:onComplete=>{stop();setMode('processed',false);return play(0,{once:true,onScanComplete:onComplete})},
-  presetSnapshot:()=>({effects:{...settings},voice:$('voice').value,balanced:$('balance').checked}),
   applyUserPreset:p=>{settings={...p.effects};$('voice').value=p.voice;$('balance').checked=p.balanced;syncControls();setMode('processed',false);changed();window.dispatchEvent(new Event('soundlab-preset-applied'))},
   playback};syncControls();
 })();
