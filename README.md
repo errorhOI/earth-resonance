@@ -39,17 +39,9 @@ Download a WAV file and open it in your audio player. Each example is a 4.5-seco
 
 These are synthesized interpretations, not recordings of Earth. [Sample settings and source hashes](docs/media/audio-settings.json) document the inputs. Ocean imagery: [NASA SVS / ECCO2](https://svs.gsfc.nasa.gov/3912/). Aerosol imagery: [NASA SVS / GMAO](https://svs.gsfc.nasa.gov/5572/). Screenshots show this app using those visualizations.
 
-## Run locally
+## Open the app
 
-Use Python 3.11 or 3.12. No AI checkpoint or GPU is needed.
-
-```powershell
-python -m venv .venv
-.venv\Scripts\python -m pip install -r requirements.txt
-.venv\Scripts\python server.py
-```
-
-Open http://127.0.0.1:8766/. On Windows, `Open Sound Lab.cmd` can launch the configured environment. The included atmosphere bundle provides all 3,312 grid cells without another download. Keep this development server local.
+Open [Earth Resonance](https://earth-resonance.onrender.com/) in your browser. No installation or download is needed.
 
 ## Host the complete app
 
