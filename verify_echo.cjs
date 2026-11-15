@@ -22,7 +22,7 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  let restarted=null;scope.window.musicSequence={running:true,index:0,order:[region],start:id=>restarted=id};
  $('echo').checked=false;$('echo').onchange();assert.equal(restarted,1,'Keep sequence context when changing Echo');assert.equal(stored.get('cosmic-siblings.echo'),'false');
  assert.equal($('scanSpeed').value,'.75','Echo never changes scan speed');
- scope.window.musicSequence.running=false;await $('play').onclick();const previous=created.at(-1);$('echo').checked=true;$('echo').onchange();await new Promise(r=>setImmediate(r));
+ delete scope.window.musicSequence;await $('play').onclick();const previous=created.at(-1);$('echo').checked=true;$('echo').onchange();await new Promise(r=>setImmediate(r));
  assert(previous.stopped,'Clear already rendered delayed copies on toggle');assert.equal(created.at(-1).config().delay_seconds,.5);
  controller.stop();
  // Exercise the REAL node activation and atmosphere update paths. Previously
@@ -48,13 +48,13 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
  }
  let melodyStarts=0;scope.window.MelodyEditor={active:true};scope.window.musicSequence={start(){melodyStarts++}};
  $('play').onclick();$('labPlay').onclick();assert.equal(melodyStarts,2,'Listen and Sound Lab play the selected melody template');
- scope.window.MelodyEditor.active=false;await $('play').onclick();assert.equal(melodyStarts,2,'No melody retains normal region playback');controller.stop();
+ scope.window.MelodyEditor.active=false;await $('play').onclick();assert.equal(melodyStarts,3,'No melody still routes through the shared playback mode');controller.stop();
  scope.window.regionCards={isGallery:()=>true};
- for(const mode of ['order','together']){
+ for(const mode of ['single','order','together']){
   $('nodeMode').value=mode;const before=melodyStarts;
   $('play').onclick();$('labPlay').onclick();assert.equal(melodyStarts,before+2,`Listen and Sound Lab use the selected ${mode} sequence in region view`);
  }
  scope.window.regionCards.isGallery=()=>false;const before=melodyStarts;
- await $('play').onclick();assert.equal(melodyStarts,before,'Map Listen still plays the current region');controller.stop();
+ await $('play').onclick();assert.equal(melodyStarts,before+1,'Map and region view use the same playback mode');controller.stop();
  console.log('PASS: saved echo setting, single/group/melody routing, no invented returns, sequence-preserving restart, stale audio cleared, template Listen routing and scan speed unchanged');
 })().catch(e=>{console.error(e);process.exitCode=1});

@@ -2,10 +2,10 @@
 // A node is one complete color scan followed by its rendered sound/arrival tail.
 // Completion comes from the audio output clock, never a wall-clock timer.
 class MusicNodeSequence {
- constructor({regions,activate,play,stopAudio,loop,update,together=()=>false}){Object.assign(this,{regions,activate,play,stopAudio,loop,update,together});this.generation=0;this.running=false;this.transitioning=false;this.index=-1;this.order=[]}
+ constructor({regions,activate,play,stopAudio,loop,update,together=()=>false,single=()=>false}){Object.assign(this,{regions,activate,play,stopAudio,loop,update,together,single});this.generation=0;this.running=false;this.transitioning=false;this.index=-1;this.order=[]}
  start(id){
   this.stop();this.order=this.regions().slice();if(!this.order.length)return;
-  this.group=this.together();this.index=this.group?0:Math.max(0,this.order.findIndex(r=>r.cardId===id));this.running=true;
+  this.group=this.together();this.index=this.group?0:Math.max(0,this.order.findIndex(r=>r.cardId===id));if(this.single()){this.order=[this.order[this.index]];this.index=0}this.running=true;
   return this.next(this.generation);
  }
  stop(){this.running=false;this.transitioning=false;this.generation++;this.stopAudio();this.update(this);this.onStop?.()}
@@ -27,19 +27,18 @@ class MusicNodeSequence {
 }
 window.MusicNodeSequence=MusicNodeSequence;
 (() => {
- const $=id=>document.getElementById(id),strip=$('musicNodes'),play=$('playNodes'),stop=$('stopNodes'),loop=$('loopNodes'),status=$('nodeStatus'),mode=$('nodeMode');
+ const $=id=>document.getElementById(id),strip=$('musicNodes'),play=$('play'),stop=$('stop'),loop=$('loop'),status=$('nodeStatus'),mode=$('nodeMode');
  let signature='',sequence;
- try{const saved=localStorage.getItem('cosmic-siblings.node-mode');mode.value=['order','together','melody'].includes(saved)?saved:'order'}catch{}
+ try{const saved=localStorage.getItem('cosmic-siblings.node-mode');mode.value=['single','order','together','melody'].includes(saved)?saved:'single'}catch{}
  mode.onchange=()=>{sequence.stop();try{localStorage.setItem('cosmic-siblings.node-mode',mode.value)}catch{}signature='';sync()};
- try{loop.checked=localStorage.getItem('cosmic-siblings.node-loop')==='true'}catch{}
- loop.onchange=()=>{try{localStorage.setItem('cosmic-siblings.node-loop',String(loop.checked))}catch{}};
  function paint(){
   const playback=window.soundLabController?.playback(),melody=mode.value==='melody';
   const current=sequence?.running?(melody?playback?.colorSample?.cardId:sequence.order[sequence.index]?.cardId):null;
   for(const node of strip.querySelectorAll('button')){
    const active=!!sequence?.running&&(sequence.group&&!melody?sequence.order.some(r=>r.cardId===Number(node.dataset.region)):Number(node.dataset.region)===current);node.classList.toggle('playing',active);node.setAttribute('aria-pressed',String(active));
   }
-  play.disabled=!regionCards.list().some(r=>r.included!==false)||!!sequence?.running;stop.disabled=!sequence?.running;
+  const busy=!!sequence?.running||!!window.soundLabController?.busy();
+  play.disabled=!regionCards.list().some(r=>r.included!==false)||busy;stop.disabled=!busy&&![oceanVideo,aerosolVideo,currentVideo].some(v=>v&&!v.paused);
   status.textContent=sequence?.running?(melody?(playback?.melody&&playback.stepIndex>=0?NodeScore.note(playback.midi):'…'):sequence.group?`${sequence.order.length} regions`:`${sequence.index+1} / ${sequence.order.length}`):'';
   window.MelodyEditor?.paint(playback);
  }
@@ -64,24 +63,24 @@ window.MusicNodeSequence=MusicNodeSequence;
   }
   $('musicSequence').hidden=!regions.length;window.MelodyEditor?.sync(mode.value);paint();
  }
- sequence=new MusicNodeSequence({regions:()=>regionCards.list().filter(r=>r.included!==false),together:()=>mode.value!=='order',
+ sequence=new MusicNodeSequence({regions:()=>regionCards.list().filter(r=>r.included!==false),together:()=>mode.value==='together'||mode.value==='melody',single:()=>mode.value==='single',
   activate:async region=>{await regionPicker.activate(region);regionCards.show(true)},
   play:(done,regions)=>mode.value==='melody'?soundLabController.playMelody(MelodyEditor.resolve(regions),MelodyEditor.bpm,done):regions?soundLabController.playTogether(regions,done):soundLabController.playScan(done),stopAudio:()=>soundLabController.stop(),loop:()=>loop.checked,update:paint});
  sequence.onError=error=>setVisualStatus(error.message||'Sequence stopped. Try playing the selected region.');
- play.onclick=()=>sequence.start();stop.onclick=()=>sequence.stop();
+ play.onclick=()=>sequence.start(mode.value==='single'?window.regionSelection?.cardId:undefined);stop.onclick=()=>sequence.stop();
  window.addEventListener('regions-changed',sync);
  window.addEventListener('soundlab-stop',()=>{if(sequence.running&&!sequence.transitioning)sequence.stop()});
  // Explicit single-region actions take over immediately, including during loading.
  document.addEventListener('click',e=>{
-  if(sequence.running&&e.target.closest('#play,#stop,#labPlay,[data-listen],.card-select,.card-atmosphere,.card-remove,#import,#editRegion,#videoPlay'))sequence.stop();
+  if(sequence.running&&e.target.closest('[data-listen],.card-select,.card-atmosphere,.card-remove,#import,#editRegion'))sequence.stop();
  },true);
  document.addEventListener('input',e=>{
   if(sequence.running&&e.target.matches('#voice,#preset,#dataset,#time,[data-fx],#bearing,#angle,#overlayBearing,#overlayAngle,#balance'))sequence.stop();
  },true);
  document.addEventListener('change',e=>{
-  if(sequence.running&&e.target.matches('#voice,#preset,#dataset,#bearing,#angle,#overlayBearing,#overlayAngle,#balance,#loop'))sequence.stop();
+  if(sequence.running&&e.target.matches('#voice,#preset,#dataset,#bearing,#angle,#overlayBearing,#overlayAngle,#balance'))sequence.stop();
  },true);
  document.addEventListener('pointerdown',e=>{if(sequence.running&&e.target.id==='globe')sequence.stop()},true);
  window.musicSequence=sequence;sync();
- function tick(){if(sequence.running&&mode.value==='melody')paint();requestAnimationFrame(tick)}requestAnimationFrame(tick);
+ function tick(){paint();requestAnimationFrame(tick)}requestAnimationFrame(tick);
 })();

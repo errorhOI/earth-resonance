@@ -56,3 +56,4 @@ main{padding-top:24px;padding-bottom:24px}
 
 /* Keep the compact model date readable on narrow screens. */
 .timeline .control-label{flex-wrap:wrap;row-gap:4px}
+.timeline{grid-template-columns:minmax(0,1fr)}

@@ -9,8 +9,7 @@ const bytes=encoded=>Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));
 oceanVideo.src=URL.createObjectURL(new Blob([bytes(NASA_MEDIA.ocean.video_base64)],{type:'video/mp4'}));
 aerosolVideo.src=URL.createObjectURL(new Blob([bytes(NASA_MEDIA.aerosols.video_base64)],{type:NASA_MEDIA.aerosols.video_type}));
 function setVisualStatus(text){$('visualStatus').textContent=text}
-function videoButton(){const paused=!currentVideo||currentVideo.paused;$('videoPlay').textContent=paused?'▶':'Ⅱ';$('videoPlay').setAttribute('aria-label',paused?'Play imagery':'Pause imagery')}
-function bindVideo(v){v.addEventListener('loadeddata',()=>{if(currentVideo===v){globe?.setSource(v,v===oceanVideo);if(globe)globe.mediaKind=v===oceanVideo?'ocean':v===aerosolVideo?'aerosols':'imported';$('time').max=v.duration;v.play().catch(()=>setVisualStatus('Press Play imagery to start the video.'))}});v.addEventListener('play',videoButton);v.addEventListener('pause',videoButton);v.addEventListener('error',()=>{if(currentVideo===v)setVisualStatus('This video could not be decoded. Try an MP4/H.264 video.')})}
+function bindVideo(v){v.addEventListener('loadeddata',()=>{if(currentVideo===v){globe?.setSource(v,v===oceanVideo);if(globe)globe.mediaKind=v===oceanVideo?'ocean':v===aerosolVideo?'aerosols':'imported';$('time').max=v.duration;v.play().catch(()=>setVisualStatus('Select a region and press Play.'))}});v.addEventListener('error',()=>{if(currentVideo===v)setVisualStatus('This video could not be decoded. Try an MP4/H.264 video.')})}
 bindVideo(oceanVideo);bindVideo(aerosolVideo);
 function releaseImported(){if(currentVideo&&currentVideo!==oceanVideo&&currentVideo!==aerosolVideo){currentVideo.pause();currentVideo.removeAttribute('src');currentVideo.load()}if(importedURL){URL.revokeObjectURL(importedURL);importedURL=null}}
 function setStill(src,version,ocean=false){const img=new Image();img.onload=()=>{if(version===mediaVersion&&(!currentVideo||currentVideo.readyState<2)){globe?.setSource(img,ocean);if(globe)globe.mediaKind=$('dataset').value}};img.onerror=()=>setVisualStatus('Unable to decode this image.');img.src=src}
@@ -22,23 +21,23 @@ function chooseDataset(){
  DatasetPeriods.show(ocean?'ocean':'aerosols');
  $('legend').innerHTML=ocean?'<span class="temperature-scale"></span><span>Cooler → warmer surface water</span>':'<span><i class="dot" style="background:#4798df"></i>Sea salt</span><span><i class="dot" style="background:#d881c0"></i>Dust</span><span><i class="dot" style="background:#df7456"></i>Smoke</span><span><i class="dot" style="background:#7bad81"></i>Sulfate</span>';
  $('mediaNote').textContent=ocean?'ECCO2 · 2007–08 · NASA SVS':'GEOS · Aug–Sep 2024 · NASA GMAO / SVS';
- $('time').disabled=false;$('videoPlay').disabled=false;
- currentVideo=ocean?oceanVideo:aerosolVideo;setStill(NASA_MEDIA[ocean?'ocean':'aerosols'].poster,version,ocean);if(currentVideo.readyState>=2){globe?.setSource(currentVideo,ocean);if(globe)globe.mediaKind=ocean?'ocean':'aerosols';currentVideo.play().catch(()=>setVisualStatus('Press Play imagery to start the video.'))}
- videoButton();window.regionPicker?.invalidate();view(true);
+ $('time').disabled=false;
+ currentVideo=ocean?oceanVideo:aerosolVideo;setStill(NASA_MEDIA[ocean?'ocean':'aerosols'].poster,version,ocean);if(currentVideo.readyState>=2){globe?.setSource(currentVideo,ocean);if(globe)globe.mediaKind=ocean?'ocean':'aerosols';currentVideo.play().catch(()=>setVisualStatus('Select a region and press Play.'))}
+ window.regionPicker?.invalidate();view(true);
 }
 function view(flat){globe?.setFlat(true);window.regionCards?.show(!flat);$('zoomControls').hidden=true}
 function rotation(value){if(globe)globe.rotation=value;$('rotate').textContent=value?'Rotation on':'Rotation off';$('rotate').setAttribute('aria-pressed',value)}
 $('zoomIn').onclick=()=>globe?.setZoom(globe.zoom*1.2);$('zoomOut').onclick=()=>globe?.setZoom(globe.zoom/1.2);$('zoomReset').onclick=()=>globe?.setZoom(1);
 $('globeView').onclick=()=>view(false);$('flatView').onclick=()=>view(true);$('rotate').onclick=()=>rotation(!globe?.rotation);$('rings').onchange=()=>{if(globe)globe.atmosphere=$('rings').checked;$('layerLegend').hidden=!$('rings').checked};
-$('dataset').onchange=chooseDataset;$('videoPlay').onclick=()=>{if(!currentVideo)return;if(currentVideo.paused)currentVideo.play().catch(e=>setVisualStatus(e.message));else currentVideo.pause()};$('time').oninput=()=>{if(currentVideo&&Number.isFinite(currentVideo.duration))currentVideo.currentTime=+$('time').value};
+$('dataset').onchange=chooseDataset;$('time').oninput=()=>{if(currentVideo&&Number.isFinite(currentVideo.duration))currentVideo.currentTime=+$('time').value};
 $('import').onclick=()=>$('file').click();
 $('file').onchange=()=>{
  const file=$('file').files[0];if(!file)return;if(file.size>250*1024*1024){setVisualStatus('Choose a media file smaller than 250 MB.');return}if(!/^(image|video)\//.test(file.type)){setVisualStatus('Please choose an image or video.');return}
  window.regionPicker?.invalidate();const version=++mediaVersion;if(globe?.map)globe.map.enabled=false;releaseImported();oceanVideo.pause();aerosolVideo.pause();currentVideo=null;importedURL=URL.createObjectURL(file);sourceOffset=0;sourceFPS=0;
  if(!$('dataset').querySelector('option[value="imported"]'))$('dataset').add(new Option('Your imported media','imported'));$('dataset').value='imported';$('datasetTitle').textContent=file.name;$('datasetTitle').dataset.sourceName=file.name;$('legend').textContent='Colors are not interpreted automatically.';$('mediaNote').textContent='Local media · source and projection unverified. Nothing is uploaded. Globe wrapping may distort this image; use Flat map to see the original aspect ratio.';
  DatasetPeriods.show('imported');
- const isVideo=file.type.startsWith('video/');$('time').disabled=!isVideo;$('videoPlay').disabled=!isVideo;setVisualStatus('');
- if(isVideo){currentVideo=configureVideo(document.createElement('video'));bindVideo(currentVideo);currentVideo.src=importedURL}else{setStill(importedURL,version);$('timeValue').textContent='STILL IMAGE';$('frameNumber').textContent='1 IMAGE'}videoButton();$('file').value='';
+ const isVideo=file.type.startsWith('video/');$('time').disabled=!isVideo;setVisualStatus('');
+ if(isVideo){currentVideo=configureVideo(document.createElement('video'));bindVideo(currentVideo);currentVideo.src=importedURL}else{setStill(importedURL,version);$('timeValue').textContent='STILL IMAGE';$('frameNumber').textContent='1 IMAGE'}$('file').value='';
 };
 function stop(){window.soundLabController?.stop()}
 function update(){

@@ -17,6 +17,8 @@ const read=n=>fs.readFileSync(__dirname+'/dist/'+n,'utf8');
  $('loop').checked=false;$('loop').onchange();assert.equal(created.at(-1).loop,false,'Live toggle reaches scanner');assert.equal(storedLoop,'false');
  $('loop').checked=true;let completed=0;await scope.window.soundLabController.playScan(()=>completed++);
  assert.equal(created.at(-1).maxSteps,16,'Node remains a finite scan despite Listen loop setting');created.at(-1).onComplete();assert.equal(completed,1);
+ scope.window.musicSequence={running:true};created.at(-1).loop='unchanged';$('loop').onchange();
+ assert.equal(created.at(-1).loop,'unchanged','Sequence Loop must not make a single node scan infinite');delete scope.window.musicSequence;
  scope.window.soundLabController.stop();created.at(-1).onComplete();assert.equal(completed,1,'Stale completion ignored');
  // The real scanner must finish the current cycle without restarting or
  // shortening existing atmospheric arrival timestamps.

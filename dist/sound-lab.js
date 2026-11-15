@@ -10,7 +10,7 @@
  async function original(voice,region=window.regionSelection){if(!region)throw Error('Select a region on the flat map first.');const key=region.key+voice;if(!originals.has(key)){if(originals.size>12)originals.clear();originals.set(key,RegionSound.synth(region.features,region.kind,voice))}return originals.get(key)}
  async function mix(s){const key=JSON.stringify([s.region?.key,s.voice,s.effects,s.delay_seconds]);if(!mixes.has(key)){if(mixes.size>5)mixes.delete(mixes.keys().next().value);const p=original(s.voice,s.region).then(b=>DSP.render(b,s.effects,s.delay_seconds));mixes.set(key,p);p.catch(()=>mixes.delete(key))}return mixes.get(key)}
  function position(){return playing&&ctx?Math.max(0,ctx.currentTime-startTime+offset):0}
- function stop(){clearTimeout(changeTimer);pendingPlay=false;version++;if(live){live.stop();live=null;const r=window.regionSelection;if(r?.liveFrame!==undefined)$('regionStatus').textContent='Frame '+r.liveFrame.toFixed(1)+' s · atmosphere grid '+AtmosphereGeo.coordinate(r.profile.latitude,r.profile.longitude)}if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();playing=false;if(globe)globe.spectrum=null;$('audioStatus').hidden=true;$('audioStatus').textContent='';$('regionStatus').dataset.audioMode='stopped';window.dispatchEvent(new Event('soundlab-stop'))}
+ function stop(){for(const v of new Set([typeof oceanVideo==='undefined'?null:oceanVideo,typeof aerosolVideo==='undefined'?null:aerosolVideo,currentVideo]))v?.pause?.();clearTimeout(changeTimer);pendingPlay=false;version++;if(live){live.stop();live=null;const r=window.regionSelection;if(r?.liveFrame!==undefined)$('regionStatus').textContent='Frame '+r.liveFrame.toFixed(1)+' s · atmosphere grid '+AtmosphereGeo.coordinate(r.profile.latitude,r.profile.longitude)}if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();playing=false;if(globe)globe.spectrum=null;$('audioStatus').hidden=true;$('audioStatus').textContent='';$('regionStatus').dataset.audioMode='stopped';window.dispatchEvent(new Event('soundlab-stop'))}
  async function play(at=0,{once=false,onScanComplete,regions,melody}={}){
   clearTimeout(changeTimer);pendingPlay=true;const ticket=++version,s=snapshot(),chosenMode=mode;
   try{
@@ -79,7 +79,7 @@
  $('preset').onchange=()=>{if(!DSP.presets[$('preset').value])return;settings={...DSP.presets[$('preset').value]};syncControls();setMode('processed',false);changed()};
  $('resetFx').onclick=()=>{settings={...DSP.defaults};$('preset').value='clean';syncControls();changed()};
  $('openLab').onclick=()=>$('soundLab').showModal();$('closeLab').onclick=()=>$('soundLab').close();
- const playCurrent=()=>mode==='processed'&&window.musicSequence&&(window.MelodyEditor?.active||window.regionCards?.isGallery())?window.musicSequence.start():play();
+ const playCurrent=()=>window.musicSequence?window.musicSequence.start($('nodeMode').value==='single'?window.regionSelection?.cardId:undefined):play();
  $('play').onclick=playCurrent;$('labPlay').onclick=()=>{setMode('processed',false);playCurrent()};$('stop').onclick=stop;
  for(const b of document.querySelectorAll('[data-listen]'))b.onclick=()=>setMode(b.dataset.listen);
  $('volume').oninput=()=>{$('volumeValue').textContent=$('volume').value+'%';if(output)output.gain.setTargetAtTime(+$('volume').value/100,ctx.currentTime,.02)};
@@ -92,7 +92,7 @@
   else if(playing||pendingPlay){const at=position();stop();void play(at)}
  };
  try{const saved=localStorage.getItem(loopKey);if(saved==='true'||saved==='false')$('loop').checked=saved==='true'}catch{}
- $('loop').onchange=()=>{try{localStorage.setItem(loopKey,String($('loop').checked))}catch{}if(source)source.loop=$('loop').checked;live?.setLoop?.($('loop').checked)};$('balance').onchange=()=>{if(playing||pendingPlay)play(position())};
+ $('loop').onchange=()=>{try{localStorage.setItem(loopKey,String($('loop').checked))}catch{}if(!window.musicSequence?.running){if(source)source.loop=$('loop').checked;live?.setLoop?.($('loop').checked)}};$('balance').onchange=()=>{if(playing||pendingPlay)play(position())};
  $('followVideo').onchange=()=>{const was=playing||pendingPlay,r=window.regionSelection;if(!$('followVideo').checked&&r?.liveFeatures){window.regionSelection={...r,features:r.liveFeatures,frame:r.liveFrame,key:r.key+'-frame-'+RegionSound.fingerprint(r.liveFeatures)}}stop();if(was)play()};
  $('voice').onchange=()=>{const was=playing||pendingPlay;stop();if(was)play()};
  function saveFile(raw,name){const url=URL.createObjectURL(new Blob([raw],{type:'audio/wav'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
@@ -112,7 +112,7 @@
   }
   return state;
  }
- window.soundLabController={stop,regionChanged:()=>{stop();mixes.clear()},playProcessedOnce:()=>{stop();setMode('processed',false);return play(0,{once:true})},atmosphereChanged:changed,
+ window.soundLabController={stop,busy:()=>playing||pendingPlay,regionChanged:()=>{stop();mixes.clear()},playProcessedOnce:()=>{stop();setMode('processed',false);return play(0,{once:true})},atmosphereChanged:changed,
   playTogether:(regions,onComplete)=>{stop();setMode('processed',false);return play(0,{regions,onScanComplete:onComplete})},
   playMelody:(steps,bpm,onComplete)=>{stop();setMode('processed',false);return play(0,{melody:{steps,bpm},onScanComplete:onComplete})},
   playScan:onComplete=>{stop();setMode('processed',false);return play(0,{once:true,onScanComplete:onComplete})},
