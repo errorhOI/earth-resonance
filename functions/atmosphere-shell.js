@@ -12,10 +12,8 @@ class AtmosphereShell {
     float rho=length(p);if(rho>=outer)return vec4(0.);
     float z1=sqrt(max(0.,outer*outer-rho*rho));
     float z0=sqrt(max(0.,inner*inner-rho*rho));
-    // Earth hides the rear atmosphere inside its silhouette.
     float lengthThrough=(z1-z0)*(rho<1.?1.:2.);
     float alpha=1.-exp(-lengthThrough*.55);
-    // A front-quarter cutaway exposes the interior. Rear volume stays visible.
     float cut=smoothstep(.10,.45,p.x/outer)*smoothstep(-.60,-.25,p.y/outer);
     alpha*=mix(1.,rho<1.?.12:.55,cut);
     float rim=exp(-abs(rho-outer)*180.)*.27;

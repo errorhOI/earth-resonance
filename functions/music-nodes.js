@@ -1,6 +1,6 @@
 'use strict';
 class MusicNodeSequence {
- constructor({regions,activate,play,stopAudio,loop,update,together=()=>false,single=()=>false}){Object.assign(this,{regions,activate,play,stopAudio,loop,update,together,single});this.generation=0;this.running=false;this.transitioning=false;this.index=-1;this.order=[]}
+ constructor({regions,activate,play,stopAudio,loop,update,prepareAudio=()=>{},together=()=>false,single=()=>false}){Object.assign(this,{regions,activate,play,stopAudio,loop,update,prepareAudio,together,single});this.generation=0;this.running=false;this.transitioning=false;this.index=-1;this.order=[]}
  start(id){
   this.stop();this.order=this.regions().slice();if(!this.order.length)return;
   this.group=this.together();this.index=this.group?0:Math.max(0,this.order.findIndex(r=>r.cardId===id));if(this.single()){this.order=[this.order[this.index]];this.index=0}this.running=true;
@@ -12,7 +12,7 @@ class MusicNodeSequence {
   if(this.index>=this.order.length){if(this.loop())this.index=0;else{this.stop();return}}
   const region=this.order[this.index];this.transitioning=true;this.update(this);
   try{
-   await this.activate(region);if(!this.running||token!==this.generation)return;
+   await Promise.all([this.prepareAudio(),this.activate(region)]);if(!this.running||token!==this.generation)return;
    let advanced=false;
    const started=await this.play(()=>{
     if(advanced||!this.running||token!==this.generation)return;
@@ -62,6 +62,7 @@ window.MusicNodeSequence=MusicNodeSequence;
   $('musicSequence').hidden=!regions.length||mode.value==='single';window.MelodyEditor?.sync(mode.value);paint();
  }
  sequence=new MusicNodeSequence({regions:()=>regionCards.list().filter(r=>mode.value==='single'||r.included!==false),together:()=>mode.value==='together'||mode.value==='melody',single:()=>mode.value==='single',
+  prepareAudio:()=>soundLabController.prepareAudio(),
   activate:async region=>{await regionPicker.activate(region);regionCards.show(true)},
   play:(done,regions)=>mode.value==='melody'?soundLabController.playMelody(MelodyEditor.resolve(regions),MelodyEditor.bpm,done):regions?soundLabController.playTogether(regions,done):soundLabController.playScan(done),stopAudio:()=>soundLabController.stop(),loop:()=>loop.checked,update:paint});
  sequence.onError=error=>setVisualStatus(error.message||'Sequence stopped. Try playing the selected region.');

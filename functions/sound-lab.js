@@ -14,12 +14,15 @@
  async function original(voice,region=window.regionSelection){if(!region)throw Error('Select a region on the flat map first.');const key=region.key+voice;if(!originals.has(key)){if(originals.size>12)originals.clear();originals.set(key,RegionSound.synth(region.features,region.kind,voice))}return originals.get(key)}
  async function mix(s){const key=JSON.stringify([s.region?.key,s.voice,s.effects,s.delay_seconds]);if(!mixes.has(key)){if(mixes.size>5)mixes.delete(mixes.keys().next().value);const p=original(s.voice,s.region).then(b=>DSP.render(b,s.effects,s.delay_seconds));mixes.set(key,p);p.catch(()=>mixes.delete(key))}return mixes.get(key)}
  function position(){return playing&&ctx?Math.max(0,ctx.currentTime-startTime+offset):0}
+ function prepareAudio(){
+  if(!ctx){ctx=new AudioContext({sampleRate:48000});const graph=DSP.outputGraph(ctx);output=graph.input;outputMonitor=graph.monitor;analyser=ctx.createAnalyser();analyser.fftSize=2048;outputMonitor.connect(analyser).connect(ctx.destination)}
+  const resumed=ctx.resume();void AudioHistory.connect(ctx,outputMonitor);return resumed;
+ }
  function stop(){for(const v of new Set([typeof oceanVideo==='undefined'?null:oceanVideo,typeof aerosolVideo==='undefined'?null:aerosolVideo,currentVideo]))v?.pause?.();clearTimeout(changeTimer);pendingPlay=false;version++;if(live){live.stop();live=null;const r=window.regionSelection;if(r?.liveFrame!==undefined)$('regionStatus').textContent='Frame '+r.liveFrame.toFixed(1)+' s · atmosphere grid '+AtmosphereGeo.coordinate(r.profile.latitude,r.profile.longitude)}if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();playing=false;if(globe)globe.spectrum=null;$('audioStatus').hidden=true;$('audioStatus').textContent='';$('regionStatus').dataset.audioMode='stopped';window.dispatchEvent(new Event('soundlab-stop'))}
  async function play(at=0,{once=false,onScanComplete,regions,melody}={}){
   clearTimeout(changeTimer);pendingPlay=true;const ticket=++version,s=snapshot(),chosenMode=mode;
   try{
-   if(!ctx){ctx=new AudioContext({sampleRate:48000});const graph=DSP.outputGraph(ctx);output=graph.input;outputMonitor=graph.monitor;analyser=ctx.createAnalyser();analyser.fftSize=2048;outputMonitor.connect(analyser).connect(ctx.destination)}
-   await ctx.resume();await AudioHistory.connect(ctx,outputMonitor);if(ticket!==version)return;$('audioStatus').hidden=true;
+   await prepareAudio();if(ticket!==version)return;$('audioStatus').hidden=true;
    if(live){live.stop();live=null}
    if(melody){
     if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();
@@ -110,7 +113,7 @@
   }
   return state;
  }
- window.soundLabController={stop,busy:()=>playing||pendingPlay,regionChanged:()=>{stop();mixes.clear()},playProcessedOnce:()=>{stop();setMode('processed',false);return play(0,{once:true})},atmosphereChanged:changed,
+ window.soundLabController={stop,prepareAudio,busy:()=>playing||pendingPlay,regionChanged:()=>{stop();mixes.clear()},playProcessedOnce:()=>{stop();setMode('processed',false);return play(0,{once:true})},atmosphereChanged:changed,
   playTogether:(regions,onComplete)=>{stop();setMode('processed',false);return play(0,{regions,onScanComplete:onComplete})},
   playMelody:(steps,bpm,onComplete)=>{stop();setMode('processed',false);return play(0,{melody:{steps,bpm},onScanComplete:onComplete})},
   playScan:onComplete=>{stop();setMode('processed',false);return play(0,{once:true,onScanComplete:onComplete})},
