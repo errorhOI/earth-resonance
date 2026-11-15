@@ -78,7 +78,7 @@
  }
  function setMode(next,replay=true){const at=position(),was=playing||pendingPlay;mode=next;for(const b of document.querySelectorAll('[data-listen]')){b.classList.toggle('active',b.dataset.listen===mode);b.setAttribute('aria-pressed',b.dataset.listen===mode)}if(was&&replay)play(at)}
  function syncControls(){for(const [key,value] of Object.entries(settings)){$('fx-'+key).value=value;$('fx-'+key+'-value').textContent=value+(key==='bass'||key==='mid'||key==='treble'?' dB':'%')}}
- function changed(){clearTimeout(changeTimer);$('labStatus').textContent='Mix updated';if((playing||pendingPlay)&&mode==='processed')changeTimer=setTimeout(()=>play(position()),120)}
+ function changed(){clearTimeout(changeTimer);if((playing||pendingPlay)&&mode==='processed')changeTimer=setTimeout(()=>play(position()),120)}
  for(const control of document.querySelectorAll('[data-fx]'))control.oninput=()=>{settings[control.dataset.fx]=+control.value;$('preset').value='custom';syncControls();changed()};
  $('preset').onchange=()=>{if(!DSP.presets[$('preset').value])return;settings={...DSP.presets[$('preset').value]};syncControls();setMode('processed',false);changed()};
  $('resetFx').onclick=()=>{settings={...DSP.defaults};$('preset').value='clean';syncControls();changed()};
