@@ -107,9 +107,3 @@ node verify_node_melody.cjs
 node verify_echo.cjs
 node verify_saved_regions.cjs
 ```
-
-## Team workflow
-
-Wen Han uses `main` for functions; Crystal uses `ui-crystal` for interface work. See [COLLABORATION.md](COLLABORATION.md).
-
-The initial commits import an already-developed app in component groups. The push/pull exercise uses today's actual operations; it does not reconstruct past development or claim that either contributor individually wrote all imported code. AI assistance was used in implementation and documentation.
