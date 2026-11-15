@@ -8,7 +8,7 @@
  const videoFor=r=>r.kind==='ocean'?oceanVideo:aerosolVideo;
  const observer=new IntersectionObserver(entries=>{for(const e of entries)e.target._visible=e.isIntersecting});
  function counts(){
-  $('globeView').textContent=`Regions (${cards.size})`;$('regionCount').textContent=`${cards.size} selected`;
+  $('globeView').textContent=`Regions (${cards.size})`;$('regionCount').textContent=`${cards.size} saved`;
   $('emptyRegions').hidden=cards.size>0;grid.classList.toggle('single-region',cards.size===1);
   $('audioWavePanel').hidden=!cards.size;
  }

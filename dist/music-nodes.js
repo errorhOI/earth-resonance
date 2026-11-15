@@ -39,7 +39,7 @@ window.MusicNodeSequence=MusicNodeSequence;
    const active=!!sequence?.running&&(sequence.group&&!melody?sequence.order.some(r=>r.cardId===Number(node.dataset.region)):Number(node.dataset.region)===current);node.classList.toggle('playing',active);node.setAttribute('aria-pressed',String(active));
   }
   const busy=!!sequence?.running||!!window.soundLabController?.busy();
-  play.disabled=!regionCards.list().some(r=>r.included!==false)||busy;stop.disabled=!busy&&![oceanVideo,aerosolVideo,currentVideo].some(v=>v&&!v.paused);
+  play.disabled=!regionCards.list().some(r=>mode.value==='single'||r.included!==false)||busy;stop.disabled=!busy&&![oceanVideo,aerosolVideo,currentVideo].some(v=>v&&!v.paused);
   status.textContent=sequence?.running?(melody?(playback?.melody&&playback.stepIndex>=0?NodeScore.note(playback.midi):'…'):sequence.group?`${sequence.order.length} regions`:`${sequence.index+1} / ${sequence.order.length}`):'';
   window.MelodyEditor?.paint(playback);
  }
@@ -62,9 +62,9 @@ window.MusicNodeSequence=MusicNodeSequence;
     choice.append(include,node);strip.append(choice);
    });
   }
-  $('musicSequence').hidden=!regions.length;window.MelodyEditor?.sync(mode.value);paint();
+  $('musicSequence').hidden=!regions.length||mode.value==='single';window.MelodyEditor?.sync(mode.value);paint();
  }
- sequence=new MusicNodeSequence({regions:()=>regionCards.list().filter(r=>r.included!==false),together:()=>mode.value==='together'||mode.value==='melody',single:()=>mode.value==='single',
+ sequence=new MusicNodeSequence({regions:()=>regionCards.list().filter(r=>mode.value==='single'||r.included!==false),together:()=>mode.value==='together'||mode.value==='melody',single:()=>mode.value==='single',
   activate:async region=>{await regionPicker.activate(region);regionCards.show(true)},
   play:(done,regions)=>mode.value==='melody'?soundLabController.playMelody(MelodyEditor.resolve(regions),MelodyEditor.bpm,done):regions?soundLabController.playTogether(regions,done):soundLabController.playScan(done),stopAudio:()=>soundLabController.stop(),loop:()=>loop.checked,update:paint});
  sequence.onError=error=>setVisualStatus(error.message||'Sequence stopped. Try playing the selected region.');
