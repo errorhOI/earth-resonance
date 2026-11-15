@@ -2,100 +2,28 @@
 
 Cosmic Siblings: Hoi Wen Han and Hoi Shao Xuan Crystal.
 
-Pick a patch of NASA ocean or aerosol imagery and hear its colors as musical notes. A moving scan line shows the pixels being played. Compare saved regions, play them in order or together, and shape the sound in Sound Lab. A separate atmosphere model shows how temperature and wind can bend a sound path.
+Turn the changing colors of NASA ocean and aerosol imagery into music. Select regions, choose an instrument, and explore a simulated sound path through the atmosphere.
 
-## See the app
+**[Open the app](https://earth-resonance.onrender.com/)** · **[Sources & method](https://docs.google.com/document/d/1Vn3WamhG3qnero-J41rTn5YZQ7JGvrADSxbjdclOmkw/view)**
 
-Select a region, then press Play. Silent demo:
+## Try it
 
-![Silent demo showing how to select a region and play its colors as notes](docs/media/select-region-and-play.gif)
+Select a region, then press **Play**. Silent demo:
 
-Compare places side by side. The peaks represent image brightness, not mountains.
+![Silent demo showing how to select a region and play](docs/media/select-region-and-play.gif)
 
-![Ocean and aerosol region cards with brightness surfaces and atmospheric paths](docs/media/region-comparison.png)
+Compare regions and adjust the sound in Sound Lab.
 
-<details>
-<summary>Sound Lab and atmosphere views</summary>
-
-Adjust bass, treble and smoothness, then save your favorite settings.
-
-![Sound Lab with equalizer, smoothing and effect controls](docs/media/sound-lab.png)
-
-Explore how temperature and wind bend the modeled sound path from A to a different location, B.
-
-![Atmospheric sound path with direction, launch angle, distance, maximum height and playback delay](docs/media/sound-path.png)
-
-</details>
+![Ocean and aerosol region comparison](docs/media/region-comparison.png)
 
 ## Hear examples
 
-Download a WAV file and open it in your audio player. Each example is a 4.5-second scan of a saved NASA visualization frame, generated with the app's current sound engine at 1× scan speed. Echo and effects are off. In the app, the video keeps changing while you listen.
+Short scans of saved frames, with Echo and effects off. Download a WAV to listen.
 
-| Example | Audio |
-| --- | --- |
-| Ocean with bells | [Download WAV](docs/media/ocean-bells.wav?raw=true) |
-| Same ocean patch with soft synth | [Download WAV](docs/media/ocean-soft-synth.wav?raw=true) |
-| Aerosols with a synthesized orchestral voice | [Download WAV](docs/media/aerosols-orchestral.wav?raw=true) |
+- [Ocean · Bells](docs/media/ocean-bells.wav?raw=true)
+- [Ocean · Soft synth](docs/media/ocean-soft-synth.wav?raw=true)
+- [Aerosols · Orchestral](docs/media/aerosols-orchestral.wav?raw=true)
 
-These are synthesized interpretations, not recordings of Earth. [Sample settings and source hashes](docs/media/audio-settings.json) document the inputs. Ocean imagery: [NASA SVS / ECCO2](https://svs.gsfc.nasa.gov/3912/). Aerosol imagery: [NASA SVS / GMAO](https://svs.gsfc.nasa.gov/5572/). Screenshots show this app using those visualizations.
+Sounds are synthesized. Surface peaks show image brightness, not terrain. Dataset dates, credits and model limits are in [Sources & method](https://docs.google.com/document/d/1Vn3WamhG3qnero-J41rTn5YZQ7JGvrADSxbjdclOmkw/view), which anyone can read.
 
-## Open the app
-
-Open [Earth Resonance](https://earth-resonance.onrender.com/) in your browser. No installation or download is needed.
-
-## Host the complete app
-
-`render.yaml` describes a **Free** Render Python web service. The browser UI and `/api/profile` calculations share one HTTPS address. No database or GPU is required.
-
-- Branch: `main`; runtime: Python 3.11.11.
-- Build: `pip install -r requirements-hosting.txt && python prepare_hosting.py`
-- Start: `python web_app.py`
-- Health check: `/api/health`
-
-The production server uses Waitress. The build extracts the existing videos into unchanged binary files so browsers can stream and seek them, and compresses text assets. Only tracked `dist/` files enter the public web directory. User-imported files stay in their browser.
-
-The 3.8 MB `data/hosted-fields.npz` contains the same decoded MERRA-2 temperature, humidity, surface pressure and wind arrays as the local source reader. Its checksum, dates and source URLs are in `data/hosted-fields.json`. Heights, atmospheric layers and 24 ray paths are still calculated for the selected grid cell in Python. Reproduce the bundle with `python prepare_hosting.py --rebuild-fields` (requires the source archive or local range cache).
-
-Render Free sleeps after 15 minutes without traffic; the next visitor may wait about a minute. It has monthly runtime, bandwidth and build limits. Videos can consume the bandwidth allowance quickly. See [Render's current free-service limits](https://render.com/docs/free). No paid plan is required by this configuration.
-
-Regions, scan speed and templates are saved per browser and site address. Existing settings at `127.0.0.1` do not automatically move to the hosted URL. Keep using the same hosted link to retain new saved settings.
-
-For a local production check, install `requirements-hosting.txt`, run `python prepare_hosting.py`, then `python verify_hosting.py` and `python web_app.py`. The default production-test port is 8767; hosting uses the supplied `PORT`.
-
-## What the controls do
-
-- In order scans each checked region once, then moves to the next.
-- Together mixes checked regions at the same time.
-- Melody uses assigned notes; imagery changes their tone and loudness.
-- Listen follows the selected node mode in Regions view. On the map it plays the current selection.
-- Repeat nodes repeats a node sequence. Echo adds an optional modeled delayed arrival.
-- Scan speed changes image-scanning speed. Melody tempo is separate.
-- Saved regions, scan speed, templates and Echo preference stay in that browser and site address.
-
-## Data and interpretation
-
-- Ocean: NASA SVS 3912 / ECCO2, 25 March 2007 to 3 March 2008.
-- Aerosols: NASA SVS 5572 / GEOS, 1 August to 14 September 2024.
-- Atmosphere: NASA MERRA-2, regridded by GEOS-Chem, 1 January 2025 at 01:30 UTC; coarse 4 by 5 degree cells.
-
-Imagery dates and atmospheric dates differ. Surface height represents image brightness, not real terrain. Sounds are synthesized, not recordings of Earth. The simplified atmospheric ray model is educational; arrival playback compresses travel time by 1,000 and is not a validated audible-sound simulation. Ocean month labels are approximate. Read Sources & method in the app and `dist/assets/provenance.json` for credits and limitations.
-
-The short Sweden practice preset credits C418 / Daniel Rosenfeld and a publisher score preview. It is a separate composed example, not NASA-derived melody or a full song. No rights to the composition are claimed.
-
-## Repository layout
-
-`dist/` contains the current browser app, embedded imagery and calculated example profiles. Python files provide geographic profile lookup and ray calculations. `data/` holds the vertical grid and source metadata. `docs/media/` contains the README screenshots and short audio examples. Large duplicate source movies, old model experiments, logs and other generated audio are excluded. The embedded JavaScript media bundles are included so a clone can display the imagery.
-
-`build_demo.py --data-only` rebuilds the example profiles. Historical audio-export mode and source-media preparation require the separate research workspace and are not needed to run this app.
-
-## Checks
-
-With Node.js installed:
-
-```powershell
-node verify_music_nodes.cjs
-node verify_region_group.cjs
-node verify_node_melody.cjs
-node verify_echo.cjs
-node verify_saved_regions.cjs
-```
+[Development and hosting](docs/DEVELOPMENT.md)
