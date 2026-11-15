@@ -13,7 +13,6 @@
   dot.setAttribute('cx',x(point[0]));dot.setAttribute('cy',y(point[1]));
   const t=valueAt(profile.temperature_k,point[1]),b=ray.bearing_deg*Math.PI/180;
   const wind=valueAt(profile.u_ms,point[1])*Math.sin(b)+valueAt(profile.v_ms,point[1])*Math.cos(b);
-  // Match the ray's piecewise-linear effective-speed profile exactly.
   const effective=profile.temperature_k.map((temp,i)=>Math.sqrt(1.4*287.05*temp)+profile.u_ms[i]*Math.sin(b)+profile.v_ms[i]*Math.cos(b));
   $('pathTemperature').textContent=(t-273.15).toFixed(1)+' °C';
   $('pathWind').textContent=(wind>=0?'+':'')+wind.toFixed(1)+' m/s';

@@ -1,7 +1,3 @@
-"""Read only required HDF5 ranges from the public GEOS-Chem archive.
-
-No authentication or execution of remote code. Requested blocks are cached locally.
-"""
 import concurrent.futures
 import hashlib
 import io

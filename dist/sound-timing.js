@@ -1,5 +1,4 @@
 'use strict';
-// Use the audio output clock when available, including device output latency.
 window.SoundTiming = (() => {
  const tracked=new WeakMap();
  return {
@@ -12,7 +11,6 @@ window.SoundTiming = (() => {
  },
  focus(region,waves){
   const key=p=>JSON.stringify([p.start,p.cardId,p.profileId,p.bearing,p.angle]);
-  // Both views retain the same note through its journey and brief arrival.
   const previous=tracked.get(region);
   const focus=waves.find(p=>key(p)===previous)||waves.filter(p=>p.progress<1).sort((a,b)=>a.age-b.age)[0]||waves.at(-1);
   if(focus)tracked.set(region,key(focus));else tracked.delete(region);

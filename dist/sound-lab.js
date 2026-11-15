@@ -49,8 +49,6 @@
    }
    if(['ocean','aerosols'].includes(s.region?.kind)&&($('followVideo').checked||onScanComplete)&&currentVideo){
     if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();
-    // Imagery may wrap while a single scan finishes. Audio repetition is
-    // controlled by maxSteps, independently of the video's duration.
     output.gain.value=volumeGain();currentVideo.loop=true;
     activePath={propagation:chosenMode==='processed',arrival:chosenMode==='processed'&&s.delay_seconds>0,profileId:s.profile_id,bearing:s.bearing,angle:s.angle};
     let count=0;
@@ -73,7 +71,6 @@
    $('regionStatus').dataset.audioMode='static-frame';
    source.onended=()=>{if(ticket===version){playing=false;$('regionStatus').dataset.audioMode='stopped';globe&&(globe.spectrum=null);window.dispatchEvent(new Event('soundlab-ended'))}};
    return true;
-
   }catch(error){if(ticket===version){stop();$('audioStatus').hidden=false;$('audioStatus').textContent=error.message}}
  }
  function setMode(next,replay=true){const at=position(),was=playing||pendingPlay;mode=next;for(const b of document.querySelectorAll('[data-listen]')){b.classList.toggle('active',b.dataset.listen===mode);b.setAttribute('aria-pressed',b.dataset.listen===mode)}if(was&&replay)play(at)}
@@ -108,7 +105,6 @@
    const elapsed=SoundTiming.now(ctx)-startTime+offset,cycle=source.loop?Math.floor(elapsed/activePath.duration):0;
    for(const loop of source.loop?[cycle-1,cycle]:[0])for(const onset of activePath.onsets){
     const start=loop*activePath.duration+onset,age=elapsed-start;
-    // With an offset, an already rendered delayed note may still be ahead.
     if(loop>=0&&age>=0&&age<=activePath.travel+.18)state.wavePulses.push({...activePath,start:startTime-offset+start,age});
    }
   }
@@ -121,4 +117,3 @@
   applyUserPreset:p=>{settings={...p.effects};$('voice').value=p.voice;$('balance').checked=p.balanced;syncControls();setMode('processed',false);changed();window.dispatchEvent(new Event('soundlab-preset-applied'))},
   playback};syncControls();
 })();
-

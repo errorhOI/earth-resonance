@@ -1,5 +1,4 @@
 'use strict';
-// Store only geographic selections. Media and scientific profiles are reloaded.
 window.RegionStorage = (() => {
  const key='cosmic-siblings.regions.v1';
  function valid(r){const b=r?.bounds;return ['ocean','aerosols'].includes(r?.kind)&&b&&['left','right','top','bottom'].every(k=>Number.isFinite(b[k])&&b[k]>=0&&b[k]<=1)&&b.left<b.right&&b.top<b.bottom;}
@@ -51,10 +50,6 @@ window.RegionStorage = (() => {
   try{
    saved=RegionStorage.read(localStorage);if(!saved?.regions.length)return;
    notice('Restoring regions…');
-   // Prepare everything before changing the visible selection. A failed load
-   // leaves the saved list intact, so a later refresh can retry it.
-   // No collection-size cap. Bound simultaneous profile requests and image
-   // sampling instead, preserving saved order even if requests finish out of order.
    const regions=new Array(saved.regions.length);let cursor=0,failed=false;
    async function worker(){
     while(!failed&&cursor<saved.regions.length){

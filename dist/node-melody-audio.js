@@ -1,6 +1,4 @@
 'use strict';
-// A composed score performed by region nodes, scheduled on the same audio clock
-// as their ray pulses. Image sampling modulates timbre/level, never score pitch.
 class NodeMelodyAudio {
  constructor({ctx,output,steps,bpm,videoFor,config,onComplete,onError}){
   Object.assign(this,{ctx,steps,bpm,videoFor,config,onComplete,onError});

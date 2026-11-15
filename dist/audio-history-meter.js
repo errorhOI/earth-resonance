@@ -1,6 +1,4 @@
 'use strict';
-// Observe every post-effects PCM sample. This branch emits silence, never a
-// second copy of the music. Both stereo channels contribute to the envelope.
 class HistoryMeter extends AudioWorkletProcessor {
  constructor(){super();this.count=0;this.low=0;this.high=0;this.size=Math.round(sampleRate*.02)}
  process(inputs,outputs){

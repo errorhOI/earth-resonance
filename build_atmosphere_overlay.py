@@ -1,4 +1,3 @@
-"""Build coverage and ray-status maps from the same fields/model as the app."""
 import hashlib
 import json
 import time

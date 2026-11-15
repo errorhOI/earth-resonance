@@ -1,8 +1,3 @@
-"""Thermal-layer estimates from the cached, hydrostatic-height profiles.
-
-No acoustic ray is modified to meet a thermal boundary. Heights are above the
-model surface, not sea level. These coarse-profile diagnostics are estimates.
-"""
 import numpy as np
 
 METHOD = {
@@ -44,8 +39,8 @@ def diagnose(height_m, temperature_k):
             continue
         above = np.append(z[(z > z[i]) & (z < z[i]+2)], z[i]+2)
         means = (t[i]-np.interp(above, z, t))/(above-z[i])
-        # For a linear T segment, mean lapse is monotone between knots;
-        # checking every knot and the 2 km endpoint checks the entire interval.
+
+
         if np.all(means <= 2 + 1e-9):
             trop = dict(height_km=float(z[i]), temperature_k=float(t[i]),
                         sample_bracket_km=[float(z[max(0,i-1)]),float(z[i+1])],
@@ -74,12 +69,12 @@ def verify():
     d=diagnose(z*1000,t)
     assert d['tropopause']['height_km']==11 and d['stratopause']['height_km']==47
     assert [x['thickness_km'] for x in d['layers']]==[11,36,13]
-    # A thin inversion meets the endpoint-only test but fails the all-level test.
+
     z2=np.array([0,5,5.5,6,7,8,9,10,11,12,13,14,15,20,35,45,47,49,55,60.])
     t2=np.array([300,270,270,264,266,260,254,248,242,236,230,230,230,240,250,265,270,265,245,230.])
     d2=diagnose(z2*1000,t2)
     assert d2['tropopause']['height_km']!=5
-    # No upper temperature maximum => unresolved, never fabricate layers.
+
     assert diagnose(z*1000,300-z*6)['stratopause'] is None
     assert diagnose(z*1000,300-z*6)['layers']==[]
 

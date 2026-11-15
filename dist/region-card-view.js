@@ -1,5 +1,4 @@
 'use strict';
-// Display-only camera; never changes the sampled region or audio settings.
 window.RegionCardView=class RegionCardView {
  constructor(){this.zoom=1;this.x=0;this.y=0;}
  clamp(){const limit=(this.zoom-1)/2;this.x=Math.max(-limit,Math.min(limit,this.x));this.y=Math.max(-limit,Math.min(limit,this.y));}

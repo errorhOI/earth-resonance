@@ -1,4 +1,3 @@
-"""Public deployment: same-origin UI and calculations, served by Waitress."""
 import os
 import mimetypes
 from pathlib import Path
@@ -31,7 +30,7 @@ def profile():
 def static_file(filename='index.html'):
     if filename.startswith('api/') or any(part.startswith('.') for part in Path(filename).parts):
         return jsonify(error='Not found.'),404
-    # send_from_directory prevents traversal and supports byte ranges for videos.
+
     compressed=filename+'.gz'
     if (request.accept_encodings['gzip']>0 and not request.headers.get('Range')
             and (STATIC/compressed).is_file() and '..' not in Path(filename).parts):
@@ -55,7 +54,7 @@ def main():
     from waitress import serve
     if not (STATIC/'index.html').exists():
         raise RuntimeError('Run python prepare_hosting.py before starting the hosted server.')
-    load_fields()  # Fail startup on missing/corrupt data; readiness then means data is available.
+    load_fields()
     serve(app,host='0.0.0.0',port=int(os.environ.get('PORT','8767')),
           threads=4,connection_limit=100,channel_timeout=60,max_request_body_size=1024*1024)
 

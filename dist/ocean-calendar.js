@@ -1,7 +1,4 @@
 'use strict';
-// NASA SVS 3912's published model-time extent. The mirrored movie has 2,059
-// frames, while NASA's date table has 2,001 entries: use normalized progress,
-// explicitly approximate, rather than claim an exact frame/date registration.
 window.OceanCalendar={
  start:Date.parse('2007-03-25T12:00:00Z'),
  end:Date.parse('2008-03-03T12:00:00Z'),

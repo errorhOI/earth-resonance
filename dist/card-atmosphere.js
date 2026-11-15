@@ -1,6 +1,4 @@
 'use strict';
-// Shared perspective with the brightness surface. Horizontal fitting and the
-// raised atmosphere base are schematic, never a terrain-aware propagation model.
 window.CardAtmosphere = (() => {
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const corners=[[0,0],[1,0],[1,1],[0,1]];
@@ -45,13 +43,9 @@ window.CardAtmosphere = (() => {
   const heightKm=point[1]/1000;
   const activeLayer=focus&&layers.find((l,i)=>heightKm>=l.bottom_km&&(heightKm<l.top_km||(i===layers.length-1&&heightKm<=l.top_km+1e-6)));
   ctx.save();
-  // Thin floating sheets mark diagnosed thermal boundaries and the sampled top;
-  // none is a rigid reflector. All share the same height scale as the ray.
   const boundaries=layers.slice(0,-1).map(l=>l.top_km*1000).filter(z=>z>base&&z<top);
   for(const z of boundaries){const rise=lift+(z-base)/span*airHeight;polygon(ctx,corners.map(([u,v])=>project(u,v,rise)),'rgba(140,185,198,.018)','#9bbbc52d',[3,5])}
   polygon(ctx,corners.map(([u,v])=>project(u,v,lift+airHeight)),'rgba(123,178,193,.065)','#9bc7d56b',[5,5]);
-  // Highlight only the data-derived volume containing the moving wave.
-  // Low-opacity faces preserve the imagery; boundaries never change the ray.
   if(activeLayer){
    const low=lift+(Math.max(base,activeLayer.bottom_km*1000)-base)/span*airHeight;
    const high=lift+(Math.min(top,activeLayer.top_km*1000)-base)/span*airHeight;
@@ -63,14 +57,11 @@ window.CardAtmosphere = (() => {
    polygon(ctx,upper,'rgba(168,228,220,.045)','#a8e4dc66');
    polygon(ctx,lower,null,'#a8e4dc55');
   }
-  // Front edges show volume while leaving the data colors visible.
   for(const corner of [corners[1],corners[2],corners[3]]){
    const a=project(...corner,lift),b=project(...corner,lift+airHeight);
    ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.strokeStyle='#8ab3c029';ctx.lineWidth=.8;ctx.setLineDash([3,6]);ctx.stroke();ctx.setLineDash([]);
   }
   const dot=(p,color,r=3.5)=>{ctx.beginPath();ctx.arc(...p,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()};
-  // Dashed anchors connect this schematic to the brightness image. They are not
-  // extra sound-path segments or physical terrain height calculations.
   for(const [uv,p,color] of [[from,source,'#76cfc3'],...(returned?[[to,end,'#81d5cd']]:[])]){
    const foot=project(...uv,g.brightnessAt(...uv)*g.zh);
    ctx.beginPath();ctx.moveTo(...foot);ctx.lineTo(...p);ctx.strokeStyle=color+'66';ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.stroke();ctx.setLineDash([]);dot(foot,color,2.5);
@@ -92,7 +83,6 @@ window.CardAtmosphere = (() => {
   for(const arrival of arrivals){const f=arrival.after/.18;ctx.beginPath();ctx.arc(...end,reduced.matches?7:6+f*14,0,Math.PI*2);ctx.strokeStyle=`rgba(129,213,205,${Math.max(0,1-f)})`;ctx.lineWidth=2;ctx.stroke()}
   const peak=Math.max(...ray.path_m.map(p=>p[1]));
   const phase=!focus?(playback?.active?(playback.propagation?'Waiting for note':'Original · no delayed sound'):'Listen to animate'):progress>=1?(returned?'Receiver reached':ray.status==='range_limit'?'Range limit reached':'Leaves sampled atmosphere'):returned&&point[1]>peak*.94?'Bending':next[1]<prev[1]?'Descending':'Rising';
-  // Keep captions readable at a fixed size while their scene anchors zoom.
   const label=(text,x,y,color='#d8ded6',align='left',fixed=false)=>{ctx.save();if(g.screen){if(!fixed)[x,y]=g.screen(x,y);ctx.setTransform(g.dpr,0,0,g.dpr,0,0)}ctx.font='12px Arial';ctx.textAlign=align;ctx.lineWidth=4;ctx.strokeStyle='#111610';ctx.strokeText(text,x,y);ctx.fillStyle=color;ctx.fillText(text,x,y);ctx.restore()};
   if(focus)label(`${activeLayer?.name||'Layer unresolved'} · ${heightKm.toFixed(1)} km`,16,18,'#a8e4dc','left',true);
   if(focus?.arrived)label('Arrived',g.w-16,18,'#81d5cd','right',true);

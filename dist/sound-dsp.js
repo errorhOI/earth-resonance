@@ -1,9 +1,6 @@
 'use strict';
- // One offline signal path powers preview and WAV export.
 window.SoundDSP = (() => {
  const defaults={bass:0,mid:0,treble:0,smooth:0,dynamics:0,reverb:0,width:100,octave:0};
- // Preserve ordinary samples exactly, rounding only peaks above 0.8. Scaling
- // into the curve gives overlapping voices headroom without lookahead delay.
  function outputGraph(ctx){
   const input=ctx.createGain(),headroom=ctx.createGain(),monitor=ctx.createWaveShaper();
   headroom.gain.value=1/8;
@@ -22,13 +19,10 @@ window.SoundDSP = (() => {
  function metrics(buffer,seconds=buffer.duration){let peak=0,sum=0;const n=Math.min(buffer.length,Math.round(seconds*buffer.sampleRate));for(let c=0;c<buffer.numberOfChannels;c++){const x=buffer.getChannelData(c);for(let i=0;i<x.length;i++){peak=Math.max(peak,Math.abs(x[i]));if(i<n)sum+=x[i]*x[i]}}return {peak,rms:Math.sqrt(sum/Math.max(1,n*buffer.numberOfChannels))}}
  function level(buffer,reference,balanced=true){const m=metrics(buffer,reference.duration),r=metrics(reference);return Math.min(balanced&&m.rms>1e-8?r.rms/m.rms:1,m.peak>0?.92/m.peak:1)}
  function impulse(ctx,seconds){const b=ctx.createBuffer(2,Math.ceil(ctx.sampleRate*seconds),ctx.sampleRate);let seed=2026;for(let c=0;c<2;c++){const x=b.getChannelData(c);for(let i=0;i<x.length;i++){seed=(Math.imul(seed,1664525)+1013904223)|0;x[i]=((seed>>>0)/4294967296*2-1)*Math.exp(-7*i/x.length)*Math.min(1,i/(ctx.sampleRate*.008))}}return b}
- // Overlapping grains play at half speed within each grain. Duration is preserved;
- // the layer is an artistic granular octave texture, not a transparent pitch shifter.
  function octave(ctx,input){
   const b=ctx.createBuffer(2,input.length,input.sampleRate),grain=Math.round(input.sampleRate*.12),hop=Math.floor(grain/4),weights=new Float32Array(input.length),src0=input.getChannelData(0),out0=b.getChannelData(0);
   for(let start=-grain;start<input.length;start+=hop){
    let shift=0,best=-Infinity;
-   // Align the overlapping waveform before placing each grain, reducing pitch flutter.
    if(start>=0&&start+hop<input.length){
     for(let candidate=-384;candidate<=384;candidate+=8){let dot=0,power=0,energy=0;
      for(let j=hop/4|0;j<hop;j+=12){const target=start+j,read=Math.floor(start+grain/4+j*.5+candidate);if(read<0||read>=input.length||weights[target]<.001)continue;const x=src0[read],y=out0[target]/weights[target];dot+=x*y;power+=x*x;energy+=y*y}

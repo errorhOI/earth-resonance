@@ -1,6 +1,4 @@
 'use strict';
-// Minimal renderer for the packaged GLB's POSITION/NORMAL/TEXCOORD_0 mesh.
-// The real video is decoded by the browser; each new frame replaces its texture.
 class EarthGlobe {
  constructor(canvas,overlay,base64){
   this.canvas=canvas;this.overlay=overlay;this.gl=canvas.getContext('webgl',{alpha:true,antialias:true,preserveDrawingBuffer:true});

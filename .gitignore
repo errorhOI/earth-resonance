@@ -1,9 +1,7 @@
-# Keep the current app, not local experiments, environments, logs or recordings.
 /*
 !/.gitignore
 !/.gitattributes
 !/README.md
-!/COLLABORATION.md
 !/requirements.txt
 !/requirements-hosting.txt
 !/.python-version

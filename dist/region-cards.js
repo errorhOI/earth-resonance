@@ -23,7 +23,6 @@
   DatasetPeriods.show($('dataset').value);
   $('flatView').classList.toggle('active',!value);$('globeView').classList.toggle('active',value);
   $('flatView').setAttribute('aria-pressed',!value);$('globeView').setAttribute('aria-pressed',value);
-  // Both datasets can animate in the gallery, but only the selected region is audible.
   if(value)for(const v of new Set([...cards.values()].map(c=>videoFor(c.region))))v.play().catch(()=>{});
   else for(const v of [oceanVideo,aerosolVideo])if(v!==currentVideo)v.pause();
   highlight();
@@ -50,7 +49,6 @@
   };
   grid.append(element);observer.observe(element);counts();highlight();show(true);
  }
- // Fixed display luma, not per-card normalization or a physical elevation model.
  function surface(entry){
   const v=videoFor(entry.region),c=entry.canvas,b=entry.region.bounds;
   if(v.readyState<2)return;
@@ -69,13 +67,11 @@
    sum+=z;points.push({x:w/2+(x-y)/(N-1)*sx,y:cy+(x+y)/(N-1)*sy-z*zh,r:px[i],g:px[i+1],b:px[i+2]});
   }
   function poly(pts,color,stroke){ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(const p of pts.slice(1))ctx.lineTo(p.x,p.y);ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.45;ctx.stroke()}}
-  // Front skirts make the zero-brightness plane legible without implying terrain depth.
   const base=(x,y)=>({x:w/2+(x-y)/(N-1)*sx,y:cy+(x+y)/(N-1)*sy});
   for(let k=0;k<N-1;k++){
    poly([points[(N-1)*N+k],points[(N-1)*N+k+1],base(k+1,N-1),base(k,N-1)],'#242a28');
    poly([points[k*N+N-1],points[(k+1)*N+N-1],base(N-1,k+1),base(N-1,k)],'#1c2220');
   }
-  // Back-to-front ordering, with two triangles per sampled cell.
   for(let diagonal=0;diagonal<2*(N-1);diagonal++)for(let y=0;y<N-1;y++){
    const x=diagonal-y;if(x<0||x>=N-1)continue;
    const a=points[y*N+x],b=points[y*N+x+1],d=points[(y+1)*N+x],e=points[(y+1)*N+x+1];

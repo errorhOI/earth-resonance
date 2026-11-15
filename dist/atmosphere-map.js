@@ -1,6 +1,4 @@
 'use strict';
-// Ground distances from the flat ray model are projected along a great circle.
-// Vertical display exaggeration is visual only; coordinates and timing are not scaled.
 window.AtmosphereGeo={
  destination(lat,lon,bearing,meters){const d=meters/6371000,r=Math.PI/180,p=lat*r,l=lon*r,b=bearing*r;
   const p2=Math.asin(Math.sin(p)*Math.cos(d)+Math.cos(p)*Math.sin(d)*Math.cos(b));
@@ -37,8 +35,6 @@ class AtmosphereMap {
   if(returned){dot(receiver,'#81d5cd',4.5);label(receiver,'Receiver','left')}
   if(returned&&!v.flat){
    const top=this.ray.path_m.reduce((best,p,i,a)=>p[1]>a[best][1]?i:best,0),peak=this.path[top],q=project(peak);
-   // Local constant-altitude guide centered at the exact analytic turning point.
-   // It is not a thermal-layer boundary and never changes the ray geometry.
    const guide=[];for(let a=-12;a<=12;a+=.4){const ll=AtmosphereGeo.destination(peak[0],peak[1],this.ray.bearing_deg,a*6371000*Math.PI/180);guide.push([...ll,peak[2]])}
    if(v.atmosphere)line(guide,'#76cfc399',1,[3,4]);
    dot(q,'#c8f2ec',3);if(q.visible){ctx.font=12*dpr+'px Arial';ctx.textAlign='right';ctx.fillStyle='#a8e4dc';ctx.strokeStyle='#101110';ctx.lineWidth=3*dpr;const text=this.ray.turning_height_km.toFixed(1)+' km · turn';ctx.strokeText(text,q.x-10*dpr,q.y-10*dpr);ctx.fillText(text,q.x-10*dpr,q.y-10*dpr)}

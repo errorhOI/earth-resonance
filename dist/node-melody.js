@@ -1,5 +1,4 @@
 'use strict';
-// A short melody-only excerpt, not a complete score. See Sources & method.
 const NodeScore={
  key:'cosmic-siblings.node-melody.v1',
  phrase:()=>({bpm:48,steps:[null,69,71,66,62,64,66,69,64].map((midi,i)=>({midi,beats:[1,.5,.5,1.5,.25,1.75,.25,.25,2][i],region:'auto'}))}),
@@ -8,7 +7,6 @@ const NodeScore={
  valid:score=>score&&Number.isFinite(score.bpm)&&score.bpm>=30&&score.bpm<=160&&Array.isArray(score.steps)&&score.steps.length>0&&score.steps.length<=128&&score.steps.every(s=>(s.midi===null||(Number.isInteger(s.midi)&&s.midi>=36&&s.midi<=84))&&Number.isFinite(s.beats)&&s.beats>=.25&&s.beats<=4&&typeof s.region==='string'&&(s.chosenRegion===undefined||typeof s.chosenRegion==='string')),
  assignments(score,regions){
   let noteIndex=0;
-  // Legacy region IDs stay automatic; new notes can explicitly choose a saved region.
   return score.steps.map(s=>{if(s.midi===null)return null;const automatic=regions[noteIndex++%regions.length];return s.chosenRegion===undefined?automatic:regions.find(r=>this.identity(r)===s.chosenRegion)});
  },
  resolve(score,regions){

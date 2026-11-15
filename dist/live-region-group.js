@@ -1,5 +1,4 @@
 'use strict';
-// Independent region scans share the output clock and sum at a bounded gain.
 class LiveRegionGroup {
  constructor({ctx,output,regions,videoFor,config,onSample,onError,onComplete}){
   this.running=false;this.completed=new Set();this.finished=false;

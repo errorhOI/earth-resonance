@@ -59,8 +59,6 @@ window.AudioHistory=(()=>{
    c.beginPath();c.moveTo(x,19);c.lineTo(x,23);c.stroke();
   }
   c.beginPath();c.moveTo(0,mid);c.lineTo(w,mid);c.stroke();
-  // One peak envelope per screen column preserves short transients even when
-  // many captured bins share a pixel. This is amplitude, not a pitch graph.
   const columns=new Map();for(const b of bins){const x=Math.min(Math.floor(w)-1,Math.floor((b.t-left)/span*w));const p=columns.get(x)||[0,0];p[0]=Math.min(p[0],b.low);p[1]=Math.max(p[1],b.high);columns.set(x,p)}
   c.strokeStyle='#76cfc3';c.lineWidth=Math.max(1,w/span*.02);c.beginPath();
   for(const [x,[low,high]] of columns){c.moveTo(x,mid-high*scale);c.lineTo(x,mid-low*scale)}c.stroke();

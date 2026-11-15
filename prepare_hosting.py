@@ -1,4 +1,3 @@
-"""Build a lean, reproducible public directory; never copy local experiments."""
 import argparse
 import base64
 import gzip
@@ -27,7 +26,7 @@ def bundle_fields():
     path.with_suffix('.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
 
 def build_static():
-    # Only tracked application files may enter the public web root.
+
     output=ROOT/'hosted-dist';output.mkdir(exist_ok=True)
     files=subprocess.check_output(['git','ls-files','dist'],cwd=ROOT,text=True).splitlines()
     if not files:raise RuntimeError('No tracked application files found.')
@@ -50,7 +49,7 @@ def build_static():
         if name=='ocean' and digest!=media[name]['video_sha256']:
             raise ValueError('Ocean video checksum mismatch.')
     (output/'media-data.js').write_text('window.NASA_MEDIA='+json.dumps(media,separators=(',',':'))+';\n',encoding='utf-8')
-    (output/'aerosols-data.js').write_text('// Aerosol metadata is included in media-data.js for hosting.\n',encoding='utf-8')
+    (output/'aerosols-data.js').write_text('\n',encoding='utf-8')
     app=(output/'app.js').read_text(encoding='utf-8')
     replacements={
         "v.preload='auto'":"v.preload='metadata'",
@@ -60,7 +59,7 @@ def build_static():
         if app.count(old)!=1:raise ValueError('Media loader changed; review hosted replacement: '+old)
         app=app.replace(old,new)
     (output/'app.js').write_text(app,encoding='utf-8')
-    # Cache keys describe the deployed bytes, including the altered media loader.
+
     import re
     html=(output/'index.html').read_text(encoding='utf-8')
     html=re.sub(r'((?:src|href)="([^"?]+))\?v=[^" ]+',lambda m:m[1]+'?v='+hashlib.sha256((output/m[2]).read_bytes()).hexdigest()[:12],html)

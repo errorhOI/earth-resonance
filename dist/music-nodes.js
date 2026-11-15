@@ -1,6 +1,4 @@
 'use strict';
-// A node is one complete color scan followed by its rendered sound/arrival tail.
-// Completion comes from the audio output clock, never a wall-clock timer.
 class MusicNodeSequence {
  constructor({regions,activate,play,stopAudio,loop,update,together=()=>false,single=()=>false}){Object.assign(this,{regions,activate,play,stopAudio,loop,update,together,single});this.generation=0;this.running=false;this.transitioning=false;this.index=-1;this.order=[]}
  start(id){
@@ -29,7 +27,6 @@ window.MusicNodeSequence=MusicNodeSequence;
 (() => {
  const $=id=>document.getElementById(id),strip=$('musicNodes'),play=$('play'),stop=$('stop'),loop=$('loop'),status=$('nodeStatus'),mode=$('nodeMode');
  let signature='',sequence;
- // Playback mode is session-only: every page load starts with one region.
  mode.value='single';
  mode.onchange=()=>{sequence.stop();signature='';sync()};
  function paint(){
@@ -71,7 +68,6 @@ window.MusicNodeSequence=MusicNodeSequence;
  play.onclick=()=>sequence.start(mode.value==='single'?window.regionSelection?.cardId:undefined);stop.onclick=()=>sequence.stop();
  window.addEventListener('regions-changed',sync);
  window.addEventListener('soundlab-stop',()=>{if(sequence.running&&!sequence.transitioning)sequence.stop()});
- // Explicit single-region actions take over immediately, including during loading.
  document.addEventListener('click',e=>{
   if(sequence.running&&e.target.closest('[data-listen],.card-select,.card-atmosphere,.card-remove,#import,#editRegion'))sequence.stop();
  },true);

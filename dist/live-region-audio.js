@@ -1,5 +1,4 @@
 'use strict';
-// Scan 16 image columns at an adjustable cadence, sampling the current frame.
 class LiveRegionAudio {
  constructor({ctx,output,region,video,config,onSample,onPaused,onEnded,onError,maxSteps=Infinity,onComplete,ownsVideo=true}){
   Object.assign(this,{ctx,output,region,video,config,onSample,onPaused,onEnded,onError,maxSteps,onComplete,ownsVideo});
@@ -8,7 +7,6 @@ class LiveRegionAudio {
   this.canvas=document.createElement('canvas');this.canvas.width=video.videoWidth;this.canvas.height=video.videoHeight;
   this.reader=this.canvas.getContext('2d',{willReadFrequently:true});
   this.gain=ctx.createGain();this.gain.gain.value=.7;
-  // Bound the summed overlapping notes/tails before monitoring volume.
   this.limiter=ctx.createWaveShaper();const curve=new Float32Array(8193);for(let i=0;i<curve.length;i++){const x=i/(curve.length-1)*2-1;curve[i]=.85*Math.tanh(x/.85)}this.limiter.curve=curve;this.limiter.oversample='2x';
   this.gain.connect(this.limiter).connect(output);
   this.pause=()=>{this.epoch++;this.lastFrame=-Infinity;this.scanStep=0;this.clearVoices();this.pulses=[];this.colorSamples=[];this.onPaused?.()};
@@ -22,7 +20,6 @@ class LiveRegionAudio {
    if(this.video.paused||this.video.seeking||this.video.readyState<2||this.busy)return;
    const frame=this.video.currentTime;
    if(frame<this.lastFrame){
-    // A source-video loop must not cut off the final delayed notes of a node.
     if(!Number.isFinite(this.maxSteps)){this.epoch++;this.clearVoices();this.pulses=[];this.colorSamples=[];this.scanStep=0}
     this.lastFrame=-Infinity;
    }
@@ -35,8 +32,6 @@ class LiveRegionAudio {
   this.completed=true;this.onComplete?.();
  }
  setLoop(enabled){
-  // Finish the current spatial scan when repetition is disabled, including its
-  // rendered tails. Do not restart the scan or discard in-flight arrivals.
   const columns=this.columnCount||16;
   this.maxSteps=enabled?Infinity:this.emitted+(this.scanStep?columns-this.scanStep:(this.emitted?0:columns));
   this.completed=false;

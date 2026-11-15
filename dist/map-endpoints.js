@@ -5,8 +5,6 @@ window.MapEndpoints = (() => {
   const playback=window.soundLabController?.playback?.();
   if(!region?.profile||ray?.status!=='returned'||!playback?.propagation)return [];
   return SoundTiming.waves(playback,region,ray).filter(w=>w.arrival).map(w=>{
-   // Follow modeled horizontal distance at the audible travel time, rather
-   // than moving at a constant speed between the endpoint coordinates.
    const point=AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,w.progress*ray.path_seconds.at(-1));
    return {...w,location:AtmosphereGeo.destination(region.profile.latitude,region.profile.longitude,ray.bearing_deg,point[0])};
   });
@@ -35,7 +33,6 @@ window.MapEndpoints = (() => {
    }
    ctx.strokeStyle='#76cfc3';ctx.lineWidth=1.5*dpr;ctx.setLineDash([3*dpr,3*dpr]);ctx.stroke();ctx.setLineDash([]);
   }
-  // Labels are offset for close endpoints; dots keep the true coordinates.
   const marker=(point,name,color,side)=>{
    const x=Math.max(left+13*dpr,Math.min(left+width-13*dpr,point[0]+side*21*dpr));
    const y=Math.max(top+13*dpr,Math.min(top+height-13*dpr,point[1]+side*22*dpr));

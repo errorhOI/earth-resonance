@@ -25,5 +25,3 @@ Short scans of saved frames, with Echo and effects off. Download a WAV to listen
 - [Aerosols · Orchestral](docs/media/aerosols-orchestral.wav?raw=true)
 
 Sounds are synthesized. Surface peaks show image brightness, not terrain. Dataset dates, credits and model limits are in [Sources & method](https://docs.google.com/document/d/1Vn3WamhG3qnero-J41rTn5YZQ7JGvrADSxbjdclOmkw/view), which anyone can read.
-
-[Development and hosting](docs/DEVELOPMENT.md)

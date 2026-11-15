@@ -1,4 +1,3 @@
-"""Extract real grid-cell profiles; download only required HDF5 ranges."""
 import hashlib
 import json
 from pathlib import Path

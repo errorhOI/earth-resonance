@@ -3,13 +3,9 @@
 @media(max-width:1100px){header{margin:0;padding:0 24px}main{padding:26px 24px 0}.workspace{grid-template-columns:190px minmax(0,1fr) 210px}.panel{padding:19px 15px}.visual-panel{padding:20px 15px}.visual-heading{display:block}.tag{display:inline-block;margin-top:4px}.viewport{height:350px}.timeline{grid-template-columns:28px 1fr}.timeline>span{display:none}.mini-metrics strong{font-size:25px}.edition{display:none}}
 @media(max-width:800px){header{height:65px;padding:0 18px}.brand{font-size:15px}.brand-mark{font-size:25px}header button{font-size:15px}main{padding:25px 16px 0}.heading{margin-bottom:23px}.live{display:none}h1{font-size:25px}.intro{font-size:15px}.workspace{grid-template-columns:1fr 1fr}.visual-panel{grid-column:1/-1;grid-row:1;border-bottom:1px solid var(--line);padding:20px}.visual-heading{display:flex}.viewport{height:410px}.panel{padding:21px 18px}.sound-panel{border-right:1px solid var(--line)}.data-panel{border-left:0}.dialog-controls{grid-template-columns:1fr 1fr}.profile-charts{grid-template-columns:1fr}}
 @media(max-width:430px){.workspace{grid-template-columns:1fr}.visual-panel{padding:18px 12px}.viewport{height:330px}.visual-heading h2{font-size:15px}.tag{font-size:15px}.sound-panel{border-right:0;border-bottom:1px solid var(--line)}.panel{padding:23px}.data-panel{border-left:0}.mini-metrics strong{font-size:25px}.globe-hint{font-size:15px}.view-controls button{font-size:15px}dialog{padding:18px}.dialog-controls{gap:13px}.dialog-controls strong{font-size:25px}}
-/* Sound Lab stays behind one small panel. */
 .compare{width:100%}.compare button{font-size:15px;padding:7px 5px;flex:1;min-width:0}.compare button:not(:first-child){border-left:0;border-radius:0}.compare button:last-child{border-radius:0 3px 3px 0}.play-options{display:flex;align-items:center;justify-content:space-between;margin-top:9px}.play-options button{font-size:15px;min-height:38px;padding:4px 12px}.play-options .check{margin:0}.ai-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-row label{margin-top:0;font-size:15px}.download-link{display:block;font-size:15px;color:var(--accent);margin-top:8px}[hidden]{display:none!important}#soundLab{max-width:620px}#soundLab h2{font-size:25px;margin-bottom:20px}.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 32px}.lab-control label{margin-top:10px}.lab-control .control-label output{padding-top:0}.lab-control input{margin-bottom:10px}.lab-bottom{border-top:1px solid var(--line);margin-top:20px;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}.lab-actions{display:flex;gap:10px;margin-top:16px}.lab-actions .primary{margin:0 0 0 auto}.sound-panel .divider{margin:20px 0}.sound-panel .status{overflow-wrap:anywhere}.sound-panel .compare+.control-label label{margin-top:20px}.sound-panel>label{margin-top:16px}.lab-actions button{font-size:15px}#soundLab .status{min-height:16px;margin-top:12px}.data-panel .micro{font-size:15px}.lab-grid input{touch-action:pan-y}
 @media(max-width:430px){.lab-grid{gap:6px 18px}#soundLab{padding:20px}.lab-actions{gap:6px}.lab-actions button{padding:8px;font-size:15px}.compare button{font-size:15px}}
-
 main{padding-bottom:28px}
-
-/* Readable type scale: section headings 25 px, text and controls 15 px. */
 h2,.visual-heading h2,dialog h2,#soundLab h2{font-size:25px}
 .eyebrow,.visual-heading .eyebrow,.dialog-controls .eyebrow{font-size:15px;letter-spacing:1px}
 main{padding-top:24px;padding-bottom:24px}
@@ -20,28 +16,16 @@ main{padding-top:24px;padding-bottom:24px}
 @media(min-width:1500px){.workspace{grid-template-columns:270px minmax(0,1fr) 290px}}
 @media(max-width:1100px){.workspace{grid-template-columns:1fr 1fr}.visual-panel{grid-column:1/-1;grid-row:1;border-bottom:1px solid var(--line)}.sound-panel{border-right:1px solid var(--line)}.data-panel{border-left:0}.viewport{height:410px}}
 @media(max-width:540px){.workspace{grid-template-columns:1fr}.sound-panel{border-right:0;border-bottom:1px solid var(--line)}.viewport{height:330px}.data-panel{border-left:0}}
-
 .view-controls{flex-wrap:wrap}.zoom-controls{display:flex;align-items:center;gap:3px}.zoom-controls button{min-width:32px;min-height:40px;padding:5px 7px}.zoom-controls #zoomReset{min-width:54px;font-size:15px}#globe:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
-
 .location-compare{border-top:1px solid #30312b;margin-top:20px;padding-top:16px}.comparison-heading,.comparison-caption{display:flex;align-items:center;justify-content:space-between;gap:12px}.comparison-heading .eyebrow{margin:0}.comparison-heading button{min-width:88px}.location-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}.location-chips button{padding:10px 4px}.location-chips button.active{border-color:#76cfc3;color:#a8e4dc;background:#1b302d}.comparison-caption{font-size:15px;color:#a3a397;margin-top:9px;flex-wrap:wrap}.comparison-caption output{color:#76cfc3}@media(max-width:540px){.location-chips{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
 .layer-legend{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}.layer-legend>span{flex:1;min-width:125px;border-left:2px solid #537789;padding:3px 8px;color:#a7b8be;font-size:15px;line-height:1.5}.layer-legend>span.current-layer{border-color:#76cfc3;color:#a8e4dc}.layer-legend small{display:block;font-size:15px;color:#9b9f9b}.layer-table table{width:100%;border-collapse:collapse;font-size:15px}.layer-table th,.layer-table td{text-align:left;padding:9px 6px;border-bottom:1px solid #30312b}.layer-table th{color:#76cfc3;font-weight:400}.layer-table{margin:18px 0}
-
 .layer-caption{flex-basis:100%;color:#92958c;font-size:15px}
-
 .region-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 0}.region-bar output{margin-right:auto;color:#a8e4dc;font-size:15px}.region-bar button{font-size:15px;padding:5px 9px;min-height:40px}.region-selections{display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid #30312b;padding-top:16px;margin-top:16px}.region-selections button{font-size:15px}.viewport canvas{touch-action:none}
-
 #regionDialog{max-width:360px}#regionForm input{width:100%;padding:9px;background:#1b1c19;border:1px solid #383a32;color:#e7e7de}
-
 .region-selections button.active{border-color:#76cfc3;color:#a8e4dc;background:#1b302d}
-
 .follow-video{margin:10px 0 0}
-
 .expanded-transport{display:none}.visual-panel.map-expanded{position:fixed;inset:0;z-index:1000;width:100%;height:100dvh;max-width:none;padding:14px 24px;display:flex;flex-direction:column;overflow:auto}.map-expanded .viewport{flex:1;min-height:180px;height:auto}.map-expanded .visual-heading{flex-shrink:0}.map-expanded .visual-heading .eyebrow,.map-expanded #layerLegend,.map-expanded #mediaNote,.map-expanded #visualStatus:empty{display:none!important}.map-expanded .expanded-transport{display:flex;gap:6px}.map-expanded .region-bar{margin-top:4px}.map-expanded .view-controls{padding:6px 0}.map-expanded .timeline{padding-top:8px}.map-expanded .micro{margin:3px 0}.map-expanded .legend{margin:8px 0}.map-expanded .region-selections{padding-top:6px;margin-top:4px}.map-expanded .follow-video{margin:4px 0}.map-expanded::backdrop{background:#101110}@media(max-height:580px){.map-expanded .visual-heading .eyebrow,.map-expanded .legend{display:none}.map-expanded .viewport{min-height:100px}}
-
 .expanded-transport{align-items:center;flex-wrap:wrap}.expanded-transport select{width:112px;min-height:40px;padding:5px 8px}.map-expanded #soundLab[open]{position:fixed;inset:auto 24px 112px auto;margin:0;width:350px;max-width:calc(100vw - 32px);max-height:65dvh;overflow:auto;padding:18px;background:#151615;border:1px solid #45463c;box-shadow:0 12px 40px #0009;z-index:1001}.map-expanded #soundLab .lab-grid{gap:3px 20px}.map-expanded #soundLab h2{margin-bottom:8px}.map-expanded #soundLab .lab-control label{margin-top:6px}.map-expanded #soundLab .lab-bottom{margin-top:10px}.map-expanded #soundLab .lab-actions{flex-wrap:wrap;gap:6px}.map-expanded #soundLab .lab-actions button{padding:6px 8px}.map-expanded #soundLab .lab-actions .primary{margin-left:0}.map-expanded #soundLab .status{margin-bottom:0}@media(max-width:540px){.map-expanded #soundLab[open]{right:16px;bottom:135px;width:310px;max-height:55dvh}}
-
-/* Fullscreen is a full-window map with floating controls. */
 .visual-panel.map-expanded{padding:14px 24px;overflow:hidden;background:#101110}
 .map-expanded .viewport{position:absolute;inset:0;width:100%;height:100%;min-height:0;margin:0;z-index:0}
 .map-expanded>.visual-heading,.map-expanded>.region-bar,.map-expanded>.follow-video,.map-expanded>#regionStatus,.map-expanded>.view-controls,.map-expanded>.timeline,.map-expanded>.legend,.map-expanded>.region-selections{position:relative;z-index:2;flex-shrink:0}
@@ -53,12 +37,8 @@ main{padding-top:24px;padding-bottom:24px}
 .map-expanded .timeline{background:#101110df;padding:8px 10px;border-radius:4px}
 .map-expanded .legend{width:fit-content;background:#101110c9;padding:2px 6px}
 .map-expanded .region-selections{position:absolute;top:150px;left:24px;max-width:calc(100% - 48px)}
-
-/* Keep the compact model date readable on narrow screens. */
 .timeline .control-label{flex-wrap:wrap;row-gap:4px}
 .timeline{grid-template-columns:minmax(0,1fr)}
-
-/* Larger default workspace, matching the 125% reference without browser zoom. */
 main{max-width:2000px;padding:30px 48px}
 .workspace{grid-template-columns:300px minmax(0,1fr) 320px}
 .panel{padding:36px 30px}

@@ -1,6 +1,4 @@
 'use strict';
-// Orthographic ray/sphere intersections. The same radius transform is used
-// by the geographic ray overlay; opacity is an illustration, not air density.
 class AtmosphereShell {
  constructor(gl){
   this.gl=gl;

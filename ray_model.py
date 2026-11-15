@@ -1,15 +1,9 @@
-"""Educational 2-D rays in a horizontally uniform effective sound-speed profile.
-
-Uses dry-air c=sqrt(gamma*R*T) plus the horizontal wind along the bearing.
-This scalar effective-speed approximation omits crosswind advection, curvature,
-terrain, attenuation and horizontal changes. It is not a validated forecast.
-"""
 import math
 import numpy as np
 
 
 def segment(dz, c1, c2, p):
-    """Exact x/time integrals through one linearly varying speed segment."""
+
     if dz <= 0:
         return 0., 0.
     q1, q2 = p*c1, min(1., p*c2)
@@ -44,7 +38,7 @@ def trace(z, speed, angle_degrees, max_range_m=2_000_000):
             zb = za + (turn_speed-ca)*(zb-za)/(cb-ca)
             cb = turn_speed
             turned = True
-        # Subdivide only for display; analytic integrals remain exact.
+
         for fraction in np.linspace(.2, 1, 5):
             dz = (zb-za)*fraction
             cp = ca+(cb-ca)*fraction
@@ -76,12 +70,12 @@ def effective_speed(temperature_k, u_ms, v_ms, bearing_degrees):
 
 
 def verify():
-    # Constant speed: straight ray and no invented atmospheric return.
+
     z = np.array([0., 1000., 2000.])
     ray = trace(z, [340., 340., 340.], 20)
     assert ray['status'] == 'left_profile_top'
     assert abs(ray['path_m'][-1][0] - 2000/math.tan(math.radians(20))) < 1e-7
-    # Linear positive gradient has an analytical turning height/range/time.
+
     c0, g, theta = 340., .005, math.radians(20)
     z = np.linspace(0, 20000, 81)
     ray = trace(z, c0+g*z, 20)
@@ -92,7 +86,7 @@ def verify():
     expected_time = -2*math.log(math.cos(theta)/(1+math.sin(theta)))/g
     assert abs(ray['travel_seconds']-expected_time) < 1e-6
     assert ray['path_m'][-1][1] == 0
-    # Wind must change sign when the direction reverses.
+
     east = effective_speed([280], [20], [0], 90)[0]
     west = effective_speed([280], [20], [0], 270)[0]
     assert abs(east-west-40) < 1e-9

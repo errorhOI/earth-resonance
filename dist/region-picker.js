@@ -1,7 +1,6 @@
 'use strict';
 (() => {
  const canvas=$('globe');let drag=null,serial=0,abort=null,selection=null;
- 
  const point=e=>{const rect=canvas.getBoundingClientRect(),map=globe.flatRect(rect.width,rect.height);
   return {u:(e.clientX-rect.left-map.left)/map.width,v:(e.clientY-rect.top-map.top)/map.height};};
  const inside=p=>p.u>=0&&p.u<=1&&p.v>=0&&p.v<=1;
@@ -9,8 +8,6 @@
  function ready(value){$('followVideoControl').hidden=!value||!currentVideo;$('atmosphereControls').hidden=!value;$('layerLegend').hidden=!value||!$('rings').checked;for(const id of ['play','expandedPlay','labPlay','saveRegion'])$(id).disabled=!value;for(const b of $('regionSelections').querySelectorAll('button')){const selected=value&&b.dataset.region===window.regionSelection?.key;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',selected)}}
  function invalidate(){serial++;abort?.abort();window.soundLabController?.stop();window.regionSelection=null;selection=null;globe.regionBox=null;globe.map.enabled=false;$('regionCoordinates').textContent='Select a region';$('regionStatus').textContent='';setVisualStatus('');$('regionSelections').hidden=true;ready(false)}
  async function capture(bounds,{replace=false}={}){
-  // New selections must not replace a saved collection that is still loading
-  // (or temporarily unavailable). Ordinary clicks no longer cancel restoration.
   if(window.savedRegions&&!window.savedRegions.editable){setVisualStatus(window.savedRegions.loading?'Restoring saved regions…':'Saved regions are kept, but could not load. Refresh to retry.');return}
   const prior=replace?window.regionSelection?.cardId:null;
   const ticket=++serial;abort?.abort();abort=new AbortController();window.soundLabController.stop();window.regionSelection=null;ready(false);

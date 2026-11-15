@@ -6,7 +6,6 @@
  function display(){const text=Number(control.value)+'×';output.textContent=text;control.setAttribute('aria-valuetext',text)}
  try{const raw=localStorage.getItem(key),saved=Number(raw);if(raw!==null&&valid(saved))control.value=String(saved)}catch{}
  display();
- // Future notes read this value; no restart or change to in-flight arrivals.
  function save(){
   display();const value=Number(control.value);if(!valid(value))return;
   try{localStorage.setItem(key,String(value))}catch{}

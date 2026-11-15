@@ -1,4 +1,3 @@
-"""Build the offline data bundle and matched atmospheric-return audio examples."""
 import hashlib
 import base64
 import json
@@ -17,10 +16,10 @@ def sha(path):
 
 
 def height_profile(temperature, humidity, surface_pressure, grid):
-    # Pressure edges from GEOS hybrid coefficients, bottom to top.
+
     edges=np.asarray(grid['_GEOS_72L_AP'])*100+np.asarray(grid['_GEOS_72L_BP'])*surface_pressure
     assert len(edges)==73 and np.all(edges>0) and np.all(np.diff(edges)<0)
-    # Hydrostatic layer thickness using virtual temperature and constant g.
+
     virtual=temperature*(1+.6078*humidity)
     thickness=287.05*virtual/9.80665*np.log(edges[:-1]/edges[1:])
     heights=np.concatenate([[0.],np.cumsum(thickness)])
@@ -43,7 +42,7 @@ def main():
         t,q,u,v=[np.asarray(p[k],float) for k in ['T','QV','U','V']]
         assert all(a.shape==(72,) for a in [t,q,u,v])
         z,pressure=height_profile(t,q,p['PS'],grid)
-        valid=z<=60000  # Explicitly restrict to the lower/middle atmosphere.
+        valid=z<=60000
         z,t,u,v,pressure=[a[valid] for a in [z,t,u,v,pressure]]
         assert 50<z[0]<300 and 45000<z[-1]<=60000
         rays=[]
@@ -70,8 +69,8 @@ def main():
     if args.data_only:
         print(f'Built {len(profiles)} profiles and {sum(len(p["rays"]) for p in profiles)} ray cases.',flush=True)
         return
-    # Preserve the user's chosen audio. An exact copy is used for browser playback.
-    # Legacy audio export is optional; serving the app and --data-only are standalone.
+
+
     sys.path.insert(0,str(ROOT.parent/'tutorial-hf'))
     from audio_utils import export_matched
     reports=[]

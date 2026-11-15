@@ -1,4 +1,3 @@
-"""Local atmosphere data service and static app. No AI model or GPU worker."""
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs

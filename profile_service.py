@@ -1,4 +1,3 @@
-"""Select actual cells from the cached global MERRA-2 fields, not preset sites."""
 from functools import lru_cache
 import json
 from pathlib import Path
@@ -35,7 +34,7 @@ def load_fields():
     return FIELDS
 
 def load_source_fields():
-    """Decode the original source fields, also used to reproduce the hosted bundle."""
+
     values={}
     for kind,size in [('I3',19224099),('A3dyn',28185683)]:
         name=f'MERRA2.20250101.{kind}.4x5.nc4'

@@ -1,5 +1,4 @@
 'use strict';
-// Existing presets remain usable; Sound Lab no longer creates or manages saved presets.
 (() => {
  const STORAGE='cosmic-siblings.sound-presets.v1',select=$('preset');
  const limits={bass:[-12,12],mid:[-12,12],treble:[-12,12],smooth:[0,100],dynamics:[0,100],reverb:[0,100],width:[0,180],octave:[0,100]};
