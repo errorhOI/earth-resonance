@@ -10,7 +10,6 @@
 !/render.yaml
 !/web_app.py
 !/prepare_hosting.py
-!/verify_hosting.py
 !/server.py
 !/profile_service.py
 !/remote_profile.py
@@ -19,7 +18,6 @@
 !/ray_model.py
 !/atmospheric_layers.py
 !/build_atmosphere_overlay.py
-!/verify_*.cjs
 !/launch-sound-lab.ps1
 !/Open Sound Lab.cmd
 !/dist/
