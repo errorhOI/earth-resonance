@@ -145,4 +145,3 @@
 .template-actions{display:flex;gap:6px}.template-actions button{flex:1;font-size:12px}#manageMelodyDialog{max-width:360px}#renamedMelodyTemplate{width:100%}
 
 .dataset-period{margin:5px 0 0;font-size:12px;color:#9da496}.card-select .card-period{margin-top:3px;font-variant-numeric:tabular-nums}
-.melody-region{grid-column:1/-1;padding:6px 0;color:#b7a574;font-size:12px}

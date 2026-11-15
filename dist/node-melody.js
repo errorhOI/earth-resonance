@@ -5,11 +5,11 @@ const NodeScore={
  phrase:()=>({bpm:48,steps:[null,69,71,66,62,64,66,69,64].map((midi,i)=>({midi,beats:[1,.5,.5,1.5,.25,1.75,.25,.25,2][i],region:'auto'}))}),
  identity:r=>JSON.stringify([r.kind,r.bounds]),
  note:midi=>midi===null?'Rest':['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][midi%12]+(Math.floor(midi/12)-1),
- valid:score=>score&&Number.isFinite(score.bpm)&&score.bpm>=30&&score.bpm<=160&&Array.isArray(score.steps)&&score.steps.length>0&&score.steps.length<=128&&score.steps.every(s=>(s.midi===null||(Number.isInteger(s.midi)&&s.midi>=36&&s.midi<=84))&&Number.isFinite(s.beats)&&s.beats>=.25&&s.beats<=4&&typeof s.region==='string'),
+ valid:score=>score&&Number.isFinite(score.bpm)&&score.bpm>=30&&score.bpm<=160&&Array.isArray(score.steps)&&score.steps.length>0&&score.steps.length<=128&&score.steps.every(s=>(s.midi===null||(Number.isInteger(s.midi)&&s.midi>=36&&s.midi<=84))&&Number.isFinite(s.beats)&&s.beats>=.25&&s.beats<=4&&typeof s.region==='string'&&(s.chosenRegion===undefined||typeof s.chosenRegion==='string')),
  assignments(score,regions){
   let noteIndex=0;
-  // Older templates may contain fixed region IDs; all notes now alternate automatically.
-  return score.steps.map(s=>s.midi===null?null:regions[noteIndex++%regions.length]);
+  // Legacy region IDs stay automatic; new notes can explicitly choose a saved region.
+  return score.steps.map(s=>{if(s.midi===null)return null;const automatic=regions[noteIndex++%regions.length];return s.chosenRegion===undefined?automatic:regions.find(r=>this.identity(r)===s.chosenRegion)});
  },
  resolve(score,regions){
   if(!this.valid(score))throw Error('Choose valid notes and tempo.');
@@ -18,7 +18,7 @@ const NodeScore={
   const assignments=this.assignments(score,regions);
   return score.steps.map((s,i)=>{if(s.midi===null)return {...s,region:null};
    const region=assignments[i];
-   if(!region)throw Error('Select a region node first.');
+   if(!region)throw Error(`Step ${i+1}: include its saved region, or remove and add the note again.`);
    return {...s,region};});
  }
 };
@@ -34,10 +34,12 @@ window.NodeScore=NodeScore;
  const save=()=>{try{localStorage.setItem(NodeScore.key,JSON.stringify(score))}catch{}};
  function change(){window.musicSequence?.stop();save();window.dispatchEvent(new Event('melody-edited'))}
  const option=(value,text)=>{const o=document.createElement('option');o.value=value;o.textContent=text;return o};
+ const regionLabel=r=>`${r.kind==='ocean'?'Ocean':'Aerosols'} · ${String(r.cardId).padStart(2,'0')}`;
+ const addButton=panel.querySelector('#addMelodyNote');
  function draw(){
   const regions=regionCards.list().filter(r=>r.included!==false);signature=regions.map(NodeScore.identity).join('|');rows.replaceChildren();
   const assignments=NodeScore.assignments(score,regions);
-  const regionLabel=r=>`${r.kind==='ocean'?'Ocean':'Aerosols'} · ${String(r.cardId).padStart(2,'0')}`;
+  addButton.disabled=score.steps.length>=128;
   score.steps.forEach((step,i)=>{
    const row=document.createElement('div');row.className='melody-step';row.dataset.step=i;
    const number=document.createElement('span');number.textContent='Step '+String(i+1).padStart(2,'0');
@@ -46,14 +48,21 @@ window.NodeScore=NodeScore;
    note.onchange=()=>{step.midi=note.value==='rest'?null:Number(note.value);change();draw()};
    const beats=document.createElement('select');beats.setAttribute('aria-label',`Step ${i+1} beats`);
    for(let b=.25;b<=4;b+=.25)beats.append(option(b,`${b} beat${b===1?'':'s'}`));beats.value=step.beats;beats.onchange=()=>{step.beats=Number(beats.value);change()};
-   const region=document.createElement('output');region.className='melody-region';region.setAttribute('aria-label',`Step ${i+1} region`);
-   region.textContent=step.midi===null?'Rest':assignments[i]?regionLabel(assignments[i]):'Select a region';
+   const region=document.createElement('select');region.setAttribute('aria-label',`Step ${i+1} region`);
+   if(step.midi===null){region.append(option('','Rest'));region.disabled=true}
+   else{
+    for(const r of regions)region.append(option(NodeScore.identity(r),regionLabel(r)));
+    if(assignments[i])region.value=NodeScore.identity(assignments[i]);
+    else{region.prepend(option('',step.chosenRegion!==undefined?'Region unavailable':'Select a region'));region.value=''}
+    region.disabled=!regions.length;
+   }
+   region.onchange=()=>{if(!regions.some(r=>NodeScore.identity(r)===region.value))return;step.chosenRegion=region.value;change();draw()};
    const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label',`Remove step ${i+1}`);remove.disabled=score.steps.length===1;remove.onclick=()=>{score.steps.splice(i,1);change();draw()};
    row.append(number,note,beats,region,remove);rows.append(row);
   });
  }
  tempo.onchange=()=>{score.bpm=Math.max(30,Math.min(160,Math.round(Number(tempo.value)||48)));tempo.value=score.bpm;change()};
- panel.querySelector('#addMelodyNote').onclick=()=>{if(score.steps.length>=128)return;score.steps.push({midi:62,beats:1,region:'auto'});change();draw()};
+ addButton.onclick=()=>{if(score.steps.length>=128)return;score.steps.push({midi:62,beats:1,region:'auto'});change();draw();rows.lastElementChild?.scrollIntoView({block:'nearest',inline:'nearest'})};
  window.MelodyEditor={get bpm(){return score.bpm},get active(){return document.getElementById('nodeMode').value==='melody'},getScore:()=>JSON.parse(JSON.stringify(score)),load(next){if(!NodeScore.valid(next))return false;window.musicSequence?.stop();score=JSON.parse(JSON.stringify(next));tempo.value=score.bpm;save();draw();return true},resolve:regions=>NodeScore.resolve(score,regions),sync(mode){panel.hidden=mode!=='melody';const next=regionCards.list().filter(r=>r.included!==false).map(NodeScore.identity).join('|');if(next!==signature)draw();window.dispatchEvent(new Event('melody-mode-changed'))},paint(state){for(const row of rows.children)row.classList.toggle('playing',!!state?.active&&!!state.melody&&Number(row.dataset.step)===state.stepIndex)}};
  draw();
 })();

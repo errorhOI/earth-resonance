@@ -16,6 +16,12 @@ phrase.steps[1].region=score.identity(regions[1]);assert.equal(score.resolve(phr
 assert.equal(score.assignments(phrase,regions)[2],regions[1],'Every note advances automatic alternation');
 assert.equal(score.resolve(phrase,[regions[0]])[1].region,regions[0],'Old templates work when a previously fixed region is removed');
 assert.throws(()=>score.resolve(phrase,[]),/Select a region/);assert.throws(()=>score.resolve({bpm:0,steps:[]},regions));
+const chosen=JSON.parse(JSON.stringify(score.phrase()));chosen.steps[1].chosenRegion=score.identity(regions[1]);
+assert(score.valid(chosen));assert.equal(score.resolve(chosen,regions)[1].region,regions[1],'Choosing Aerosols changes the actual played region');
+assert.equal(score.resolve(JSON.parse(JSON.stringify(chosen)),[regions[1],regions[0]])[1].region,regions[1],'Chosen region survives save/reload and reordered nodes');
+assert.throws(()=>score.resolve(chosen,[regions[0]]),/Step 2/,'Missing or unchecked chosen region must not silently play another');
+chosen.steps[1].midi=null;assert.equal(score.resolve(chosen,regions)[1].region,null,'Rest does not play its saved region');
+chosen.steps[1].chosenRegion={};assert(!score.valid(chosen),'Reject malformed region choices');
 const feature=(warmth,brightness)=>({warmth,brightness,coverage:1,types:[1,0,0,0],colors:[]});
 const blue=feature(0,.2),red=feature(1,.8),neutral={...blue,coverage:0};
 const spectral=(a,hz)=>{let re=0,im=0;for(let i=0;i<a.length;i++){const p=2*Math.PI*hz*i/48000;re+=a[i]*Math.cos(p);im+=a[i]*Math.sin(p)}return Math.hypot(re,im)};
