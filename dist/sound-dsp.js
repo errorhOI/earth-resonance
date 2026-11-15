@@ -1,7 +1,21 @@
 'use strict';
-// One offline signal path powers preview, WAV export and the AI input.
+ // One offline signal path powers preview and WAV export.
 window.SoundDSP = (() => {
  const defaults={bass:0,mid:0,treble:0,smooth:0,dynamics:0,reverb:0,width:100,octave:0};
+ // Preserve ordinary samples exactly, rounding only peaks above 0.8. Scaling
+ // into the curve gives overlapping voices headroom without lookahead delay.
+ function outputGraph(ctx){
+  const input=ctx.createGain(),headroom=ctx.createGain(),monitor=ctx.createWaveShaper();
+  headroom.gain.value=1/8;
+  const curve=new Float32Array(16385);
+  for(let i=0;i<curve.length;i++){
+   const x=(i/(curve.length-1)*2-1)*8,a=Math.abs(x);
+   curve[i]=a<=.8?x:Math.sign(x)*(.8+.18*Math.tanh((a-.8)/.18));
+  }
+  monitor.curve=curve;monitor.oversample='none';
+  input.connect(headroom).connect(monitor);
+  return {input,monitor};
+ }
  const presets={clean:{...defaults},warm:{...defaults,bass:4,mid:1,treble:-4,smooth:55,dynamics:25},
   spacious:{...defaults,treble:-1,smooth:25,reverb:40,width:140},
   cinematic:{...defaults,bass:5,mid:-1,treble:-3,smooth:45,dynamics:45,reverb:55,width:145,octave:25}};
@@ -45,5 +59,5 @@ window.SoundDSP = (() => {
   return rendered;
  }
  function wav(buffer,gain=1){const length=buffer.length,raw=new ArrayBuffer(44+length*4),v=new DataView(raw),str=(at,s)=>{for(let i=0;i<s.length;i++)v.setUint8(at+i,s.charCodeAt(i))};str(0,'RIFF');v.setUint32(4,36+length*4,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);v.setUint32(24,buffer.sampleRate,true);v.setUint32(28,buffer.sampleRate*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,length*4,true);for(let i=0;i<length;i++)for(let c=0;c<2;c++){const x=Math.max(-1,Math.min(1,buffer.getChannelData(Math.min(c,buffer.numberOfChannels-1))[i]*gain));v.setInt16(44+(i*2+c)*2,Math.round(x*(x<0?32768:32767)),true)}return raw}
- return {defaults,presets,render,metrics,level,wav};
+ return {defaults,presets,render,metrics,level,wav,outputGraph};
 })();

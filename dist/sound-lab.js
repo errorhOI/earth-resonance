@@ -2,9 +2,13 @@
 (() => {
  const DSP=SoundDSP;
  let settings={...DSP.defaults},mode='processed',ctx,source,output,sourceGain,startTime=0,offset=0,version=0,changeTimer;
- let pendingPlay=false,activePath=null,live=null;
+ let pendingPlay=false,activePath=null,live=null,outputMonitor;
  const originals=new Map(),mixes=new Map();
  const $=id=>document.getElementById(id);
+ const volumeKey='cosmic-siblings.volume';
+ const volumeGain=()=>Math.max(0,Math.min(2,Number($('volume').value)/100||0));
+ try{const saved=localStorage.getItem(volumeKey);if(saved!==null&&saved!==undefined&&saved.trim()!==''&&Number.isFinite(Number(saved)))$('volume').value=Math.max(0,Math.min(200,Number(saved)))}catch{}
+ $('volumeValue').textContent=$('volume').value+'%';
  const delay=()=>$('echo').checked&&window.regionSelection&&currentRay?.status==='returned'?currentRay.travel_seconds/1000:0;
  const snapshot=()=>({region:window.regionSelection,voice:$('voice').value,effects:{...settings},scan_speed:+$('scanSpeed').value,echo_enabled:$('echo').checked,delay_seconds:delay(),travel_seconds:currentRay.path_seconds.at(-1)/1000,profile_id:$('location').value,bearing:currentRay.bearing_deg,angle:currentRay.angle_deg,balanced:$('balance').checked});
  async function original(voice,region=window.regionSelection){if(!region)throw Error('Select a region on the flat map first.');const key=region.key+voice;if(!originals.has(key)){if(originals.size>12)originals.clear();originals.set(key,RegionSound.synth(region.features,region.kind,voice))}return originals.get(key)}
@@ -14,12 +18,12 @@
  async function play(at=0,{once=false,onScanComplete,regions,melody}={}){
   clearTimeout(changeTimer);pendingPlay=true;const ticket=++version,s=snapshot(),chosenMode=mode;
   try{
-   if(!ctx){ctx=new AudioContext({sampleRate:48000});output=ctx.createGain();analyser=ctx.createAnalyser();analyser.fftSize=2048;output.connect(analyser).connect(ctx.destination)}
-   await ctx.resume();await AudioHistory.connect(ctx,output);if(ticket!==version)return;$('audioStatus').hidden=true;
+   if(!ctx){ctx=new AudioContext({sampleRate:48000});const graph=DSP.outputGraph(ctx);output=graph.input;outputMonitor=graph.monitor;analyser=ctx.createAnalyser();analyser.fftSize=2048;outputMonitor.connect(analyser).connect(ctx.destination)}
+   await ctx.resume();await AudioHistory.connect(ctx,outputMonitor);if(ticket!==version)return;$('audioStatus').hidden=true;
    if(live){live.stop();live=null}
    if(melody){
     if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();
-    output.gain.value=+$('volume').value/100;activePath={propagation:true};
+    output.gain.value=volumeGain();activePath={propagation:true};
     live=new NodeMelodyAudio({ctx,output,steps:melody.steps,bpm:melody.bpm,videoFor:r=>r.kind==='ocean'?oceanVideo:aerosolVideo,
      config:r=>{const ray=r.profile.rays.find(ray=>ray.bearing_deg===s.bearing&&ray.angle_deg===s.angle);
       if(!ray)throw Error('Atmospheric path unavailable for this region.');
@@ -30,7 +34,7 @@
    }
    if(regions?.length){
     if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();
-    output.gain.value=+$('volume').value/100;activePath={propagation:chosenMode==='processed'};
+    output.gain.value=volumeGain();activePath={propagation:chosenMode==='processed'};
     live=new LiveRegionGroup({ctx,output,regions,videoFor:r=>r.kind==='ocean'?oceanVideo:aerosolVideo,
      config:r=>{
       const ray=r.profile.rays.find(ray=>ray.bearing_deg===s.bearing&&ray.angle_deg===s.angle);
@@ -47,7 +51,7 @@
     if(source){source.onended=null;try{source.stop()}catch{}source.disconnect();source=null}sourceGain?.disconnect();
     // Imagery may wrap while a single scan finishes. Audio repetition is
     // controlled by maxSteps, independently of the video's duration.
-    output.gain.value=+$('volume').value/100;currentVideo.loop=true;
+    output.gain.value=volumeGain();currentVideo.loop=true;
     activePath={propagation:chosenMode==='processed',arrival:chosenMode==='processed'&&s.delay_seconds>0,profileId:s.profile_id,bearing:s.bearing,angle:s.angle};
     let count=0;
     live=new LiveRegionAudio({ctx,output,region:s.region,video:currentVideo,maxSteps:(once||onScanComplete||!$('loop').checked)?16:Infinity,onComplete:()=>{if(ticket===version){if(onScanComplete)onScanComplete();else stop()}},
@@ -64,7 +68,7 @@
    const previousSource=source,previousGain=sourceGain;
    if(previousSource){previousSource.onended=null;previousGain.gain.cancelScheduledValues(ctx.currentTime);previousGain.gain.setValueAtTime(previousGain.gain.value,ctx.currentTime);previousGain.gain.linearRampToValueAtTime(0,ctx.currentTime+.025);try{previousSource.stop(ctx.currentTime+.03)}catch{}setTimeout(()=>{previousSource.disconnect();previousGain.disconnect()},60)}
    source=ctx.createBufferSource();source.buffer=buffer;source.loop=!once&&$('loop').checked;sourceGain=ctx.createGain();
-   const targetLevel=DSP.level(buffer,raw,s.balanced);sourceGain.gain.setValueAtTime(0,ctx.currentTime);sourceGain.gain.linearRampToValueAtTime(targetLevel,ctx.currentTime+.025);output.gain.value=+$('volume').value/100;
+   const targetLevel=DSP.level(buffer,raw,s.balanced);sourceGain.gain.setValueAtTime(0,ctx.currentTime);sourceGain.gain.linearRampToValueAtTime(targetLevel,ctx.currentTime+.025);output.gain.value=volumeGain();
    source.connect(sourceGain).connect(output);offset=at%buffer.duration;startTime=ctx.currentTime;AudioHistory.begin();source.start(startTime,offset);playing=true;pendingPlay=false;activePath={propagation:chosenMode==='processed'&&!!s.region,arrival:chosenMode==='processed'&&s.delay_seconds>0,profileId:s.profile_id,bearing:s.bearing,angle:s.angle,cardId:s.region.cardId,travel:s.travel_seconds,onsets:RegionSound.onsets(s.region.features,s.region.kind),duration:buffer.duration};
    $('regionStatus').dataset.audioMode='static-frame';
    source.onended=()=>{if(ticket===version){playing=false;$('regionStatus').dataset.audioMode='stopped';globe&&(globe.spectrum=null);window.dispatchEvent(new Event('soundlab-ended'))}};
@@ -82,7 +86,7 @@
  const playCurrent=()=>window.musicSequence?window.musicSequence.start($('nodeMode').value==='single'?window.regionSelection?.cardId:undefined):play();
  $('play').onclick=playCurrent;$('labPlay').onclick=()=>{setMode('processed',false);playCurrent()};$('stop').onclick=stop;
  for(const b of document.querySelectorAll('[data-listen]'))b.onclick=()=>setMode(b.dataset.listen);
- $('volume').oninput=()=>{$('volumeValue').textContent=$('volume').value+'%';if(output)output.gain.setTargetAtTime(+$('volume').value/100,ctx.currentTime,.02)};
+ $('volume').oninput=()=>{$('volumeValue').textContent=$('volume').value+'%';try{localStorage.setItem(volumeKey,String(volumeGain()*100))}catch{}if(output)output.gain.setTargetAtTime(volumeGain(),ctx.currentTime,.02)};
  const loopKey='cosmic-siblings.listen-loop';
  const echoKey='cosmic-siblings.echo';
  try{const saved=localStorage.getItem(echoKey);if(saved==='true'||saved==='false')$('echo').checked=saved==='true'}catch{}

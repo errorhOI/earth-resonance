@@ -2,26 +2,28 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
 (async()=>{
  const controls=new Map(),$=id=>{if(!controls.has(id))controls.set(id,{value:'',checked:false,dataset:{},classList:{toggle(){}},setAttribute(){},addEventListener(){},querySelectorAll:()=>[]});return controls.get(id)};
  $('voice').value='bells';$('volume').value='70';$('scanSpeed').value='.75';$('location').value='cell';$('followVideo').checked=true;$('echo').checked=true;
- const stored=new Map([['cosmic-siblings.echo','false']]),created=[];
+ const stored=new Map([['cosmic-siblings.echo','false'],['cosmic-siblings.volume','200']]),created=[],gains=[];
  const ray={status:'returned',travel_seconds:500,path_seconds:[0,500],bearing_deg:90,angle_deg:15};
  const region={kind:'ocean',cardId:1,profile:{id:'cell',rays:[ray]}};
  class Capture{constructor(o){Object.assign(this,o);created.push(this)}async start(){}stop(){this.stopped=true}playback(){return {}}}
  const scope={localStorage:{getItem:k=>stored.get(k),setItem:(k,v)=>stored.set(k,v)},window:{regionSelection:region,dispatchEvent(){}},document:{getElementById:$,querySelectorAll:()=>[]},SoundDSP:{defaults:{}},currentRay:ray,
-  AudioHistory:{connect:async()=>{},begin(){}},AudioContext:class{createGain(){return {gain:{value:1},connect(){return this}}}createAnalyser(){return {connect(){}}}async resume(){}},
+  AudioHistory:{connect:async()=>{},begin(){}},AudioContext:class{createGain(){const node={gain:{value:1,setTargetAtTime(v){this.value=v}},connect(){return this}};gains.push(node);return node}createWaveShaper(){return {connect(){return this}}}createAnalyser(){return {connect(){}}}async resume(){}},
   LiveRegionAudio:Capture,LiveRegionGroup:Capture,NodeMelodyAudio:Capture,oceanVideo:{},aerosolVideo:{},currentVideo:{},playing:false,globe:null,analyser:null,clearTimeout,setTimeout,Event};
- vm.createContext(scope);vm.runInContext(fs.readFileSync(__dirname+'/dist/sound-lab.js','utf8'),scope);
+ vm.createContext(scope);vm.runInContext(fs.readFileSync(__dirname+'/dist/sound-dsp.js','utf8'),scope);scope.SoundDSP=scope.window.SoundDSP;vm.runInContext(fs.readFileSync(__dirname+'/dist/sound-lab.js','utf8'),scope);
  const controller=scope.window.soundLabController;
  assert.equal($('echo').checked,false,'Saved echo setting is restored');
+ assert.equal($('volume').value,200,'Saved 200% volume is restored');
  for(const enabled of [false,true]){
   $('echo').checked=enabled;
   await $('play').onclick();assert.equal(created.at(-1).config().delay_seconds,enabled?.5:0);controller.stop();
   await controller.playTogether([region],()=>{});assert.equal(created.at(-1).config(region).delay_seconds,enabled?.5:0);controller.stop();
-  await controller.playMelody([{region,midi:69,beats:1}],48,()=>{});assert.equal(created.at(-1).config(region).delay_seconds,enabled?.5:0);controller.stop();
+  await controller.playMelody([{region,midi:69,beats:1}],48,()=>{});assert.equal(created.at(-1).config(region).delay_seconds,enabled?.5:0);assert.equal(gains[0].gain.value,2,'200% applies to melody as well as scans');controller.stop();
  }
  ray.status='profile_limit';await controller.playTogether([region],()=>{});assert.equal(created.at(-1).config(region).delay_seconds,0,'Echo cannot invent a return');controller.stop();ray.status='returned';
  let restarted=null;scope.window.musicSequence={running:true,index:0,order:[region],start:id=>restarted=id};
  $('echo').checked=false;$('echo').onchange();assert.equal(restarted,1,'Keep sequence context when changing Echo');assert.equal(stored.get('cosmic-siblings.echo'),'false');
  assert.equal($('scanSpeed').value,'.75','Echo never changes scan speed');
+ $('volume').value='150';$('volume').oninput();assert.equal(stored.get('cosmic-siblings.volume'),'150');assert.equal(gains[0].gain.value,1.5);assert.equal(stored.get('cosmic-siblings.echo'),'false');
  delete scope.window.musicSequence;await $('play').onclick();const previous=created.at(-1);$('echo').checked=true;$('echo').onchange();await new Promise(r=>setImmediate(r));
  assert(previous.stopped,'Clear already rendered delayed copies on toggle');assert.equal(created.at(-1).config().delay_seconds,.5);
  controller.stop();

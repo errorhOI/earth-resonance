@@ -6,10 +6,10 @@ const read=n=>fs.readFileSync(__dirname+'/dist/'+n,'utf8');
  let storedLoop='false';$('loop').checked=true;
  const created=[],scope={localStorage:{getItem:()=>storedLoop,setItem:(key,value)=>storedLoop=value},window:{regionSelection:{kind:'ocean',cardId:1,profile:{id:'cell'}},dispatchEvent(){}},
   document:{getElementById:$,querySelectorAll:()=>[]},SoundDSP:{defaults:{}},currentRay:{status:'returned',travel_seconds:500,path_seconds:[0,500],bearing_deg:90,angle_deg:15},
-  AudioHistory:{connect:async()=>{},begin(){}},AudioContext:class{createGain(){return {gain:{value:1},connect(){return this}}}createAnalyser(){return {connect(){}}}async resume(){}},
+  AudioHistory:{connect:async()=>{},begin(){}},AudioContext:class{createGain(){return {gain:{value:1},connect(){return this}}}createWaveShaper(){return {connect(){return this}}}createAnalyser(){return {connect(){}}}async resume(){}},
   LiveRegionAudio:class{constructor(o){Object.assign(this,o);created.push(this)}async start(){}stop(){this.stopped=true}setLoop(v){this.loop=v}playback(){return {}}},
   currentVideo:{},playing:false,globe:null,analyser:null,clearTimeout,setTimeout,Event};
- vm.createContext(scope);vm.runInContext(read('sound-lab.js'),scope);
+ vm.createContext(scope);vm.runInContext(read('sound-dsp.js'),scope);scope.SoundDSP=scope.window.SoundDSP;vm.runInContext(read('sound-lab.js'),scope);
  assert.equal($('loop').checked,false,'Saved Loop off overrides the HTML default');
  await $('play').onclick();assert.equal(created.at(-1).maxSteps,16,'Unchecked Listen is one scan');assert(scope.playing);
  created.at(-1).onComplete();assert(!scope.playing,'Single scan stops after completion');assert(created.at(-1).stopped);
