@@ -66,7 +66,6 @@ def main():
         model='Flat, horizontally uniform, dry-air effective-speed ray approximation: c_eff=sqrt(1.4*287.05*T)+U*sin(bearing)+V*cos(bearing). Analytic integration through piecewise-linear effective speed. No crosswind advection, terrain, Earth curvature, absorption or amplitude prediction.',
         audio_note='Source cue and distant receiver arrival are combined for presentation. This is not an echo heard at the source. Arrival time is divided by 1000; the musical clip is not sped up. Return amplitude is artistic, not predicted. Infrasound-inspired ray paths do not validate audible bell propagation.')
     output=json.dumps(results,separators=(',',':'),allow_nan=False)
-    (dist/'results.json').write_text(output,encoding='utf-8')
     (dist/'results.js').write_text('window.ATMOSPHERE_RESULTS='+output+';',encoding='utf-8')
     if args.data_only:
         print(f'Built {len(profiles)} profiles and {sum(len(p["rays"]) for p in profiles)} ray cases.',flush=True)

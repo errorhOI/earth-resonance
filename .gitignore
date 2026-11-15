@@ -36,6 +36,12 @@
 /dist/assets/*.webm
 /dist/assets/*.glb
 /dist/audio-data.js
+/dist/results.json
+/dist/sound-sources.js
+/dist/assets/aerosols-poster.jpg
+/docs/media/map-selection.png
+/docs/media/sound-lab.png
+/docs/media/sound-path.png
 /dist/sound-lab-check.html
 /dist/location-compare.js
 **/__pycache__/
