@@ -6,13 +6,17 @@ const NodeScore={
  identity:r=>JSON.stringify([r.kind,r.bounds]),
  note:midi=>midi===null?'Rest':['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][midi%12]+(Math.floor(midi/12)-1),
  valid:score=>score&&Number.isFinite(score.bpm)&&score.bpm>=30&&score.bpm<=160&&Array.isArray(score.steps)&&score.steps.length>0&&score.steps.length<=128&&score.steps.every(s=>(s.midi===null||(Number.isInteger(s.midi)&&s.midi>=36&&s.midi<=84))&&Number.isFinite(s.beats)&&s.beats>=.25&&s.beats<=4&&typeof s.region==='string'),
+ assignments(score,regions){
+  let noteIndex=0;
+  return score.steps.map(s=>s.midi===null?null:s.region==='auto'?regions[noteIndex++%regions.length]:regions.find(r=>this.identity(r)===s.region));
+ },
  resolve(score,regions){
   if(!this.valid(score))throw Error('Choose valid notes and tempo.');
   if(!regions.length)throw Error('Select a region node first.');
   if(!score.steps.some(s=>s.midi!==null))throw Error('Add at least one note.');
-  let noteIndex=0;
-  return score.steps.map(s=>{if(s.midi===null)return {...s,region:null};
-   const region=s.region==='auto'?regions[noteIndex++%regions.length]:regions.find(r=>this.identity(r)===s.region);
+  const assignments=this.assignments(score,regions);
+  return score.steps.map((s,i)=>{if(s.midi===null)return {...s,region:null};
+   const region=assignments[i];
    if(!region)throw Error('A melody region is missing or unchecked. Reassign it below.');
    return {...s,region};});
  }
@@ -31,6 +35,8 @@ window.NodeScore=NodeScore;
  const option=(value,text)=>{const o=document.createElement('option');o.value=value;o.textContent=text;return o};
  function draw(){
   const regions=regionCards.list().filter(r=>r.included!==false);signature=regions.map(NodeScore.identity).join('|');rows.replaceChildren();
+  const assignments=NodeScore.assignments(score,regions);
+  const regionLabel=r=>`${r.kind==='ocean'?'Ocean':'Aerosols'} · ${String(r.cardId).padStart(2,'0')}`;
   score.steps.forEach((step,i)=>{
    const row=document.createElement('div');row.className='melody-step';row.dataset.step=i;
    const number=document.createElement('span');number.textContent='Step '+String(i+1).padStart(2,'0');
@@ -39,10 +45,11 @@ window.NodeScore=NodeScore;
    note.onchange=()=>{step.midi=note.value==='rest'?null:Number(note.value);change();draw()};
    const beats=document.createElement('select');beats.setAttribute('aria-label',`Step ${i+1} beats`);
    for(let b=.25;b<=4;b+=.25)beats.append(option(b,`${b} beat${b===1?'':'s'}`));beats.value=step.beats;beats.onchange=()=>{step.beats=Number(beats.value);change()};
-   const region=document.createElement('select');region.setAttribute('aria-label',`Step ${i+1} region`);region.append(option('auto','Next node'));
-   for(const r of regions){region.append(option(NodeScore.identity(r),`Region ${String(r.cardId).padStart(2,'0')} · ${r.kind==='ocean'?'Ocean':'Aerosols'}`))}
+   const region=document.createElement('select');region.setAttribute('aria-label',`Step ${i+1} region`);
+   region.append(option('auto',step.midi===null?'Rest':step.region==='auto'?(assignments[i]?`${regionLabel(assignments[i])} (auto)`:'Select a region'):'Automatic'));
+   for(const r of regions){region.append(option(NodeScore.identity(r),regionLabel(r)))}
    if(step.region!=='auto'&&!regions.some(r=>NodeScore.identity(r)===step.region))region.append(option(step.region,'Missing region'));
-   region.value=step.region;region.disabled=step.midi===null;region.onchange=()=>{step.region=region.value;change()};
+   region.value=step.midi===null?'auto':step.region;region.disabled=step.midi===null;region.onchange=()=>{step.region=region.value;change();draw()};
    const remove=document.createElement('button');remove.type='button';remove.textContent='×';remove.setAttribute('aria-label',`Remove step ${i+1}`);remove.disabled=score.steps.length===1;remove.onclick=()=>{score.steps.splice(i,1);change();draw()};
    row.append(number,note,beats,region,remove);rows.append(row);
   });

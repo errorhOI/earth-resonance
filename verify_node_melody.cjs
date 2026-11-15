@@ -7,8 +7,13 @@ const regions=[{cardId:1,kind:'ocean',bounds:{left:0,right:.5}},{cardId:2,kind:'
 const phrase=score.phrase(),steps=score.resolve(phrase,regions);
 assert.equal(steps.reduce((s,n)=>s+n.beats,0),8);assert.equal(steps.filter(s=>s.midi!==null).length,8);
 assert.equal(steps[1].region,regions[0]);assert.equal(steps[2].region,regions[1]);assert.equal(steps[3].region,regions[0]);
+assert.equal(score.assignments(phrase,regions)[0],null,'Rest has no region');
+assert.equal(score.assignments(phrase,[regions[1]])[1],regions[1],'Labels follow remaining selected region');
+assert.equal(score.assignments(phrase,[regions[1],regions[0]])[1],regions[1],'Labels follow node order');
+assert.equal(score.assignments(phrase,[])[1],undefined,'Empty selection has no invented assignment');
 assert(score.valid(JSON.parse(JSON.stringify(phrase))),'Score survives storage round trip');
 phrase.steps[1].region=score.identity(regions[1]);assert.equal(score.resolve(phrase,regions)[1].region,regions[1]);
+assert.equal(score.assignments(phrase,regions)[2],regions[0],'Explicit assignments do not advance automatic alternation');
 assert.throws(()=>score.resolve(phrase,[regions[0]]),/missing/);assert.throws(()=>score.resolve({bpm:0,steps:[]},regions));
 const feature=(warmth,brightness)=>({warmth,brightness,coverage:1,types:[1,0,0,0],colors:[]});
 const blue=feature(0,.2),red=feature(1,.8),neutral={...blue,coverage:0};
