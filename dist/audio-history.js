@@ -62,9 +62,9 @@ window.AudioHistory=(()=>{
   // One peak envelope per screen column preserves short transients even when
   // many captured bins share a pixel. This is amplitude, not a pitch graph.
   const columns=new Map();for(const b of bins){const x=Math.min(Math.floor(w)-1,Math.floor((b.t-left)/span*w));const p=columns.get(x)||[0,0];p[0]=Math.min(p[0],b.low);p[1]=Math.max(p[1],b.high);columns.set(x,p)}
-  c.strokeStyle='#ddc898';c.lineWidth=Math.max(1,w/span*.02);c.beginPath();
+  c.strokeStyle='#76cfc3';c.lineWidth=Math.max(1,w/span*.02);c.beginPath();
   for(const [x,[low,high]] of columns){c.moveTo(x,mid-high*scale);c.lineTo(x,mid-low*scale)}c.stroke();
-  const x=(end-left)/span*w;c.strokeStyle='#eee3c5';c.lineWidth=1;c.beginPath();c.moveTo(x,top);c.lineTo(x,bottom);c.stroke();
+  const x=(end-left)/span*w;c.strokeStyle='#d7faf3';c.lineWidth=1;c.beginPath();c.moveTo(x,top);c.lineTo(x,bottom);c.stroke();
   $('waveAmplitude').textContent=`±${Number(range.toPrecision(3))} · auto scale`;
   $('waveTime').textContent=active&&isPlaying?frequency:'30 s history';
   $('waveTime').title='Strongest frequency in the mixed output; it may be a note or harmonic. Several colors and delayed notes can overlap.';

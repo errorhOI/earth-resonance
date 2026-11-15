@@ -14,33 +14,33 @@
 #musicSequence{margin:0 0 18px;border-bottom:1px solid #34382f;padding-bottom:16px}
 #musicSequence[hidden]{display:none}
 .node-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:15px}
-.node-toolbar>span{margin-right:auto}.node-toolbar output{color:#c4ae7e;min-width:42px;text-align:right}
-.node-choice{display:flex;align-items:center;gap:7px;flex:0 0 auto}.node-choice input{accent-color:#c4ae7e}.node-choice:has(input:not(:checked)) .music-node{opacity:.5}.node-toolbar select{width:auto;margin-right:auto}
+.node-toolbar>span{margin-right:auto}.node-toolbar output{color:#76cfc3;min-width:42px;text-align:right}
+.node-choice{display:flex;align-items:center;gap:7px;flex:0 0 auto}.node-choice input{accent-color:#76cfc3}.node-choice:has(input:not(:checked)) .music-node{opacity:.5}.node-toolbar select{width:auto;margin-right:auto}
 #musicNodes{display:flex;align-items:center;gap:10px;overflow-x:auto;padding:12px 1px 4px;scrollbar-width:thin}
 .music-node{position:relative;flex:0 0 auto;text-align:left;border-radius:8px;padding:10px 16px;min-width:135px}
 .music-node span,.music-node small{display:block}.music-node small{font-size:15px;margin-top:5px;color:#9da496}
-.music-node.playing{border-color:#c4ae7e;background:#29291f;box-shadow:inset 0 2px #c4ae7e}
-.music-node.playing::after{content:'';position:absolute;right:6px;top:6px;width:5px;height:5px;border-radius:50%;background:#e7d5a3;animation:node-beat 1s ease-in-out infinite}
+.music-node.playing{border-color:#76cfc3;background:#1b302d;box-shadow:inset 0 2px #76cfc3}
+.music-node.playing::after{content:'';position:absolute;right:6px;top:6px;width:5px;height:5px;border-radius:50%;background:#c8f2ec;animation:node-beat 1s ease-in-out infinite}
 .node-link{color:#9da496;flex:none}
 @keyframes node-beat{50%{opacity:.35}}
 @media(prefers-reduced-motion:reduce){.music-node.playing::after{animation:none}}
 .region-card{min-width:0;border:1px solid #34382f;background:#141713;border-radius:4px;overflow:hidden}
-.region-card.selected{border-color:#c4ae7e;box-shadow:inset 0 2px #c4ae7e}
+.region-card.selected{border-color:#76cfc3;box-shadow:inset 0 2px #76cfc3}
 .region-card header{display:flex;align-items:center;justify-content:space-between;padding:12px 12px 0;gap:6px;margin:0;width:auto;border:0;min-height:0}
 .region-card .card-select{display:flex;text-align:left;align-items:center;gap:12px;border:0;background:none;padding:4px;min-width:0}
 .card-select small{display:block;color:#9da496;margin-top:5px;font-size:15px}
-.card-number{color:#c4ae7e;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.card-number{color:#76cfc3;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .card-remove{border:0;background:transparent;padding:5px 9px;font-size:25px;color:#9da496}
 .region-surface{display:block;width:100%;height:230px}.single-region .region-surface{height:330px}
 .card-footer{display:flex;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid #2a3028;flex-wrap:wrap}
 .card-frame{color:#9da496;font-size:15px;margin-right:auto;font-variant-numeric:tabular-nums}
 .card-footer button{padding:7px 8px;font-size:15px}
 #audioWavePanel{margin:12px 0 20px;border-top:1px solid #34382f;padding-top:14px;position:relative;z-index:2;background:#10130f}
-.wave-heading{font-size:15px}.wave-heading output{color:#c4ae7e}
+.wave-heading{font-size:15px}.wave-heading output{color:#76cfc3}
 #audioWave{width:100%;height:150px;display:block}
 .wave-axis{display:flex;justify-content:space-between;font-size:15px;color:#9da496}
 #scientificDetails{margin-top:24px;border-top:1px solid #3c4035;padding-top:16px}
-#scientificDetails summary{cursor:pointer;color:#c4ae7e;font-size:15px;padding:8px 0}
+#scientificDetails summary{cursor:pointer;color:#76cfc3;font-size:15px;padding:8px 0}
 #scientificDetails[open]>p:first-of-type{max-width:70ch;line-height:1.7}
 #atmosphereSummary{font-size:14px;line-height:1.7;max-width:75ch;color:#d8ddcf}
 .cards-view .region-bar #editRegion{display:none}
@@ -65,7 +65,7 @@
 .region-card .surface-view{display:block;position:relative;width:100%;background:transparent}
 .region-surface{cursor:grab;touch-action:pan-y}
 .region-surface.panning{cursor:grabbing}
-.region-surface:focus-visible{outline:1px solid #c4ae7e;outline-offset:-2px}
+.region-surface:focus-visible{outline:1px solid #76cfc3;outline-offset:-2px}
 .card-frame{display:none}
 .sound-colors{display:flex;align-items:center;gap:10px;margin:10px 0 2px;font-size:15px;color:#c7cbbf}
 .sound-colors[hidden]{display:none!important}
@@ -73,7 +73,7 @@
 .sound-color{flex-basis:8px;min-width:8px;border-radius:2px;border:1px solid #ffffff25}
 #followVideoControl{display:none!important}
 .viewport #expandMap.map-fullscreen-button{position:absolute;z-index:3;width:36px;height:36px;min-height:36px;padding:0;font-size:25px;line-height:1;background:#141713df;border:1px solid #666b59;border-radius:4px;display:grid;place-items:center}
-.viewport #expandMap.map-fullscreen-button:hover{border-color:#c4ae7e;background:#25291fee}
+.viewport #expandMap.map-fullscreen-button:hover{border-color:#76cfc3;background:#20332fee}
 .map-expanded .expanded-transport .compare{display:flex;grid-template-columns:none;width:auto;margin:0 4px;flex:0 0 auto}
 .map-expanded .expanded-transport .compare button{min-height:40px;padding:5px 10px;white-space:nowrap}
 .expanded-preset,.expanded-volume{display:flex;align-items:center;gap:8px;flex:0 0 auto}
@@ -95,12 +95,12 @@
 #renamedPreset{width:100%;padding:9px 10px;font-size:15px}
 #managePresetStatus:empty{display:none}
 .preset-manage-actions{display:flex;align-items:center;gap:8px;margin-top:22px;flex-wrap:wrap}
-.preset-manage-actions .primary{margin:0 0 0 auto;background:var(--gold);color:#161711}
+.preset-manage-actions .primary{margin:0 0 0 auto;background:var(--accent);color:#161711}
 #undoPresetDelete[hidden]{display:none}
 
 #emptyRegions #chooseRegionFromEmpty{border:0;background:transparent;color:inherit;font:inherit;padding:8px;cursor:pointer}
 #emptyRegions #chooseRegionFromEmpty:hover{text-decoration:underline;text-underline-offset:3px}
-#emptyRegions #chooseRegionFromEmpty:focus-visible{outline:2px solid #c4ae7e;outline-offset:3px}
+#emptyRegions #chooseRegionFromEmpty:focus-visible{outline:2px solid #76cfc3;outline-offset:3px}
 
 /* Optional atmosphere overlay uses the real profile grid, separate from imagery. */
 #coverageControls,#overlaySettings{display:flex;align-items:center;gap:6px}
@@ -138,7 +138,7 @@
 .region-surface{height:340px}.single-region .region-surface{height:430px}
 @media(max-width:700px){.region-surface,.single-region .region-surface{height:360px}}
 
-#nodeMelody{margin:12px 0 18px}#nodeMelody[hidden]{display:none}.melody-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.melody-toolbar label{display:flex;gap:6px;align-items:center}.melody-toolbar input{width:65px;padding:6px}#melodySteps{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}.melody-step{display:grid;grid-template-columns:1fr auto;gap:6px;border:1px solid #34372f;padding:8px;min-width:135px;flex:0 0 135px}.melody-step>span{color:#b7a574}.melody-step select{grid-column:1/-1;width:100%;min-width:0;padding:6px}.melody-step>button{grid-row:1;grid-column:2;padding:0 6px;border:0}.melody-step.playing{border-color:#c6b580;background:#24271d}.melody-step.playing>span{color:#ffe8a4}
+#nodeMelody{margin:12px 0 18px}#nodeMelody[hidden]{display:none}.melody-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.melody-toolbar label{display:flex;gap:6px;align-items:center}.melody-toolbar input{width:65px;padding:6px}#melodySteps{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}.melody-step{display:grid;grid-template-columns:1fr auto;gap:6px;border:1px solid #34372f;padding:8px;min-width:135px;flex:0 0 135px}.melody-step>span{color:#8fc8c0}.melody-step select{grid-column:1/-1;width:100%;min-width:0;padding:6px}.melody-step>button{grid-row:1;grid-column:2;padding:0 6px;border:0}.melody-step.playing{border-color:#76cfc3;background:#1b302d}.melody-step.playing>span{color:#d7faf3}
 
 .melody-template-picker{margin:14px 0}.melody-template-picker label{margin:0 0 7px}.melody-template-picker button{margin-top:7px;font-size:15px}#templateDialog{max-width:360px}#templateName{width:100%}
 

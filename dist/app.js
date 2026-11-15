@@ -53,7 +53,7 @@ function update(){
  $('outcome').textContent=returned?'Modeled arrival: '+(currentRay.travel_seconds/1000).toFixed(3)+' s after time compression.':'No return within model limits. Delayed arrival is unavailable.';
  $('profileStatus').textContent=p.label+' · '+p.latitude+'° latitude, '+p.longitude+'° longitude · '+data.time_label+' · historical sample';
  $('pathNote').textContent=returned?'Returns '+currentRay.landing_range_km.toFixed(1)+' km away at the starting height of '+(currentRay.source_height_km*1000).toFixed(0)+' m above the surface. This is a distant receiver, not an echo heard at the source.':'The ray exits the profile or exceeds the range limit. No delayed arrival is added.';
- const ymax=Math.ceil(p.height_m.at(-1)/10000)*10;chart('temperature',p.temperature_k.map((t,i)=>[t,p.height_m[i]/1000]),'Temperature · K','#c4ae7e',null,ymax);const a=+$('bearing').value*Math.PI/180;chart('wind',p.u_ms.map((u,i)=>[u*Math.sin(a)+p.v_ms[i]*Math.cos(a),p.height_m[i]/1000]),'Wind component · m/s','#96b7bd',null,ymax);$('sourceDetails').textContent=data.source_description+' '+data.height_method+' '+data.time_method;window.dispatchEvent(new Event('atmosphere-selected'));
+ const ymax=Math.ceil(p.height_m.at(-1)/10000)*10;chart('temperature',p.temperature_k.map((t,i)=>[t,p.height_m[i]/1000]),'Temperature · K','#76cfc3',null,ymax);const a=+$('bearing').value*Math.PI/180;chart('wind',p.u_ms.map((u,i)=>[u*Math.sin(a)+p.v_ms[i]*Math.cos(a),p.height_m[i]/1000]),'Wind component · m/s','#96b7bd',null,ymax);$('sourceDetails').textContent=data.source_description+' '+data.height_method+' '+data.time_method;window.dispatchEvent(new Event('atmosphere-selected'));
 }
 for(const p of data.profiles)$('location').add(new Option(p.label,p.id));for(const id of ['location','bearing','angle'])$(id).onchange=update;
 $('locateProfile').onclick=()=>view(true);
@@ -73,7 +73,7 @@ function chart(id,points,xlabel,color,xmax,ymax){
  let s='';for(let k=0;k<=4;k++){const y=k*ymax/4,x=xmin+(xmax-xmin)*k/4;s+=`<path d="M${L} ${Y(y)}H${w-R}" stroke="#2c4154"/><text x="${L-12}" y="${Y(y)+4}" text-anchor="end">${y.toFixed(0)}</text><text x="${X(x)}" y="${h-B+22}" text-anchor="middle">${x.toFixed(0)}</text>`}
  s+=`<text x="${w/2}" y="${h-6}" text-anchor="middle">${xlabel}</text><text x="15" y="${h/2}" transform="rotate(-90 15 ${h/2})" text-anchor="middle">Height above surface · km</text>`;
  s+=`<path id="${id}-line" d="${points.map((p,i)=>`${i?'L':'M'}${X(p[0]).toFixed(2)} ${Y(p[1]).toFixed(2)}`).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5"/>`;
- if(id==='ray'){s+=`<circle cx="${X(0)}" cy="${Y(points[0][1])}" r="5" fill="#81e3ca"/>`;if(currentRay.status==='returned'){const end=points.at(-1);s+=`<circle cx="${X(end[0])}" cy="${Y(end[1])}" r="5" fill="#ffd28a"/>`}}
+ if(id==='ray'){s+=`<circle cx="${X(0)}" cy="${Y(points[0][1])}" r="5" fill="#81e3ca"/>`;if(currentRay.status==='returned'){const end=points.at(-1);s+=`<circle cx="${X(end[0])}" cy="${Y(end[1])}" r="5" fill="#a8e4dc"/>`}}
  el.innerHTML=s;
 }
 

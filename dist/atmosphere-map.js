@@ -31,8 +31,8 @@ class AtmosphereMap {
   const dot=(p,color,size)=>{if(!p.visible)return;ctx.beginPath();ctx.arc(p.x,p.y,size*dpr,0,2*Math.PI);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='#121511';ctx.lineWidth=1.5*dpr;ctx.stroke()};
   const label=(p,text,side)=>{if(!p.visible)return;ctx.font=12*dpr+'px Arial';ctx.textAlign=side;ctx.lineWidth=3*dpr;ctx.strokeStyle='#101110';ctx.fillStyle='#e9e6d9';const x=p.x+(side==='right'?-10:10)*dpr,y=p.y+17*dpr;ctx.strokeText(text,x,y);ctx.fillText(text,x,y)};
   for(const p of this.profiles){const q=project([p.latitude,p.longitude,1]);if(q.visible){this.hits.push({...q,id:p.id});if(p.id!==this.profile.id)dot(q,'#a6aea0',2.8)}}
-  line(this.path.map(p=>[p[0],p[1],1]),'#c4ae7e77',1,[3,4]);line(this.path,'#d9be81',2);
-  dot(source,'#e0c48b',4.5);label(source,'Source','right');
+  line(this.path.map(p=>[p[0],p[1],1]),'#76cfc377',1,[3,4]);line(this.path,'#76cfc3',2);
+  dot(source,'#a8e4dc',4.5);label(source,'Source','right');
   const returned=this.ray.status==='returned',last=this.path.at(-1),receiver=project(last);
   if(returned){dot(receiver,'#81d5cd',4.5);label(receiver,'Receiver','left')}
   if(returned&&!v.flat){
@@ -40,8 +40,8 @@ class AtmosphereMap {
    // Local constant-altitude guide centered at the exact analytic turning point.
    // It is not a thermal-layer boundary and never changes the ray geometry.
    const guide=[];for(let a=-12;a<=12;a+=.4){const ll=AtmosphereGeo.destination(peak[0],peak[1],this.ray.bearing_deg,a*6371000*Math.PI/180);guide.push([...ll,peak[2]])}
-   if(v.atmosphere)line(guide,'#d9be8199',1,[3,4]);
-   dot(q,'#efd7a1',3);if(q.visible){ctx.font=12*dpr+'px Arial';ctx.textAlign='right';ctx.fillStyle='#e6cf9e';ctx.strokeStyle='#101110';ctx.lineWidth=3*dpr;const text=this.ray.turning_height_km.toFixed(1)+' km · turn';ctx.strokeText(text,q.x-10*dpr,q.y-10*dpr);ctx.fillText(text,q.x-10*dpr,q.y-10*dpr)}
+   if(v.atmosphere)line(guide,'#76cfc399',1,[3,4]);
+   dot(q,'#c8f2ec',3);if(q.visible){ctx.font=12*dpr+'px Arial';ctx.textAlign='right';ctx.fillStyle='#a8e4dc';ctx.strokeStyle='#101110';ctx.lineWidth=3*dpr;const text=this.ray.turning_height_km.toFixed(1)+' km · turn';ctx.strokeText(text,q.x-10*dpr,q.y-10*dpr);ctx.fillText(text,q.x-10*dpr,q.y-10*dpr)}
   }
   const playback=window.soundLabController?.playback?.();
   if(!playback?.active||!(playback.propagation||playback.arrival)||playback.profileId!==this.profile.id||playback.bearing!==this.ray.bearing_deg||playback.angle!==this.ray.angle_deg)return;

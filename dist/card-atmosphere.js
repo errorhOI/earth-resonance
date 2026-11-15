@@ -58,10 +58,10 @@ window.CardAtmosphere = (() => {
    const lower=corners.map(([u,v])=>project(u,v,low)),upper=corners.map(([u,v])=>project(u,v,high));
    for(let i=0;i<4;i++){
     const next=(i+1)%4;
-    polygon(ctx,[lower[i],lower[next],upper[next],upper[i]],'rgba(236,211,153,.035)',null);
+    polygon(ctx,[lower[i],lower[next],upper[next],upper[i]],'rgba(168,228,220,.035)',null);
    }
-   polygon(ctx,upper,'rgba(236,211,153,.045)','#ecd39966');
-   polygon(ctx,lower,null,'#ecd39955');
+   polygon(ctx,upper,'rgba(168,228,220,.045)','#a8e4dc66');
+   polygon(ctx,lower,null,'#a8e4dc55');
   }
   // Front edges show volume while leaving the data colors visible.
   for(const corner of [corners[1],corners[2],corners[3]]){
@@ -71,32 +71,32 @@ window.CardAtmosphere = (() => {
   const dot=(p,color,r=3.5)=>{ctx.beginPath();ctx.arc(...p,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()};
   // Dashed anchors connect this schematic to the brightness image. They are not
   // extra sound-path segments or physical terrain height calculations.
-  for(const [uv,p,color] of [[from,source,'#dfc58b'],...(returned?[[to,end,'#81d5cd']]:[])]){
+  for(const [uv,p,color] of [[from,source,'#76cfc3'],...(returned?[[to,end,'#81d5cd']]:[])]){
    const foot=project(...uv,g.brightnessAt(...uv)*g.zh);
    ctx.beginPath();ctx.moveTo(...foot);ctx.lineTo(...p);ctx.strokeStyle=color+'66';ctx.lineWidth=1;ctx.setLineDash([2,4]);ctx.stroke();ctx.setLineDash([]);dot(foot,color,2.5);
   }
   const path=(points,color,width)=>{ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...at(p)):ctx.moveTo(...at(p)));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke()};
-  path(ray.path_m,'#e3c78070',1.5);
-  if(focus){const travelled=ray.path_m.filter((_,i)=>ray.path_seconds[i]<=progress*total);travelled.push(point);path(travelled,'#f1d58d',2.5)}
+  path(ray.path_m,'#76cfc370',1.5);
+  if(focus){const travelled=ray.path_m.filter((_,i)=>ray.path_seconds[i]<=progress*total);travelled.push(point);path(travelled,'#a8e4dc',2.5)}
   for(const f of [.22,.5,.78]){
    const a=at(AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,(f-.01)*total)),b=at(AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,f*total));
-   ctx.save();ctx.translate(...b);ctx.rotate(Math.atan2(b[1]-a[1],b[0]-a[0]));ctx.strokeStyle='#ecd399';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-5,-3);ctx.lineTo(0,0);ctx.lineTo(-5,3);ctx.stroke();ctx.restore();
+   ctx.save();ctx.translate(...b);ctx.rotate(Math.atan2(b[1]-a[1],b[0]-a[0]));ctx.strokeStyle='#a8e4dc';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-5,-3);ctx.lineTo(0,0);ctx.lineTo(-5,3);ctx.stroke();ctx.restore();
   }
-  dot(source,'#dfc58b');dot(end,returned?'#81d5cd':'#a9b3b0');const pos=at(point);
-  if(!reduced.matches)for(const wave of travelling)if(wave!==focus)dot(at(AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,wave.progress*total)),'#fff4cd55',2);
-  if(focus){dot(pos,'#fff4cd',5);ctx.beginPath();ctx.arc(...pos,8,0,Math.PI*2);ctx.strokeStyle='#fff4cd';ctx.lineWidth=1.2;ctx.stroke()}
+  dot(source,'#76cfc3');dot(end,returned?'#81d5cd':'#a9b3b0');const pos=at(point);
+  if(!reduced.matches)for(const wave of travelling)if(wave!==focus)dot(at(AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,wave.progress*total)),'#e5fff955',2);
+  if(focus){dot(pos,'#e5fff9',5);ctx.beginPath();ctx.arc(...pos,8,0,Math.PI*2);ctx.strokeStyle='#e5fff9';ctx.lineWidth=1.2;ctx.stroke()}
   const next=AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,Math.min(total,progress*total+total*.01));
   const prev=AtmosphereGeo.pointAt(ray.path_m,ray.path_seconds,Math.max(0,progress*total-total*.01));
   const n=at(next),p=at(prev),direction=Math.atan2(n[1]-p[1],n[0]-p[0]);
-  if(focus&&progress<1&&!reduced.matches){for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(...pos,9+i*5,direction-.7,direction+.7);ctx.strokeStyle=`rgba(238,213,153,${.65-i*.16})`;ctx.lineWidth=1.5;ctx.stroke()}}
+  if(focus&&progress<1&&!reduced.matches){for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(...pos,9+i*5,direction-.7,direction+.7);ctx.strokeStyle=`rgba(168,228,220,${.65-i*.16})`;ctx.lineWidth=1.5;ctx.stroke()}}
   for(const arrival of arrivals){const f=arrival.after/.18;ctx.beginPath();ctx.arc(...end,reduced.matches?7:6+f*14,0,Math.PI*2);ctx.strokeStyle=`rgba(129,213,205,${Math.max(0,1-f)})`;ctx.lineWidth=2;ctx.stroke()}
   const peak=Math.max(...ray.path_m.map(p=>p[1]));
   const phase=!focus?(playback?.active?(playback.propagation?'Waiting for note':'Original · no delayed sound'):'Listen to animate'):progress>=1?(returned?'Receiver reached':ray.status==='range_limit'?'Range limit reached':'Leaves sampled atmosphere'):returned&&point[1]>peak*.94?'Bending':next[1]<prev[1]?'Descending':'Rising';
   // Keep captions readable at a fixed size while their scene anchors zoom.
   const label=(text,x,y,color='#d8ded6',align='left',fixed=false)=>{ctx.save();if(g.screen){if(!fixed)[x,y]=g.screen(x,y);ctx.setTransform(g.dpr,0,0,g.dpr,0,0)}ctx.font='12px Arial';ctx.textAlign=align;ctx.lineWidth=4;ctx.strokeStyle='#111610';ctx.strokeText(text,x,y);ctx.fillStyle=color;ctx.fillText(text,x,y);ctx.restore()};
-  if(focus)label(`${activeLayer?.name||'Layer unresolved'} · ${heightKm.toFixed(1)} km`,16,18,'#ecd399','left',true);
+  if(focus)label(`${activeLayer?.name||'Layer unresolved'} · ${heightKm.toFixed(1)} km`,16,18,'#a8e4dc','left',true);
   if(focus?.arrived)label('Arrived',g.w-16,18,'#81d5cd','right',true);
-  label('A',source[0]-8,source[1]+18,'#e5ce99','right');
+  label('A',source[0]-8,source[1]+18,'#a8e4dc','right');
   label(returned?'B':'No return',end[0]+8,end[1]+18,returned?'#9cded6':'#bdc5c2');
   ctx.restore();entry.canvas.dataset.atmospherePhase=phase;entry.canvas.dataset.atmosphereStatus=ray.status;
   entry.canvas.dataset.atmosphereLayer=activeLayer?.name||'unresolved';entry.canvas.dataset.atmosphereHeightKm=focus?heightKm.toFixed(3):'';

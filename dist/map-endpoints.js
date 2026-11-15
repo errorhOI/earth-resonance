@@ -33,7 +33,7 @@ window.MapEndpoints = (() => {
     const q=project(AtmosphereGeo.destination(...pair.a,ray.bearing_deg,ray.landing_range_km*1000*i/64));
     if(!prev||Math.abs(q[0]-prev[0])>width/2)ctx.moveTo(...q);else ctx.lineTo(...q);prev=q;
    }
-   ctx.strokeStyle='#e4cd8d';ctx.lineWidth=1.5*dpr;ctx.setLineDash([3*dpr,3*dpr]);ctx.stroke();ctx.setLineDash([]);
+   ctx.strokeStyle='#76cfc3';ctx.lineWidth=1.5*dpr;ctx.setLineDash([3*dpr,3*dpr]);ctx.stroke();ctx.setLineDash([]);
   }
   // Labels are offset for close endpoints; dots keep the true coordinates.
   const marker=(point,name,color,side)=>{
@@ -44,7 +44,7 @@ window.MapEndpoints = (() => {
    ctx.beginPath();ctx.arc(x,y,10*dpr,0,Math.PI*2);ctx.fillStyle='#101110ed';ctx.fill();ctx.strokeStyle=color;ctx.stroke();
    ctx.font=`${12*dpr}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(name,x,y);
   };
-  marker(a,'A','#e4cd8d',-1);if(b)marker(b,'B','#81d5cd',1);
+  marker(a,'A','#76cfc3',-1);if(b)marker(b,'B','#81d5cd',1);
   const waves=b?pulses(region,ray):[];
   const focus=b?SoundTiming.focus(region,waves):null;
   if(viewer.overlay?.dataset)viewer.overlay.dataset.trackedPulseStart=focus?String(focus.start):'';
@@ -56,13 +56,13 @@ window.MapEndpoints = (() => {
     ctx.strokeStyle=`rgba(129,213,205,${fade})`;ctx.lineWidth=2*dpr;ctx.stroke();
    }else if(!reduced.matches&&wave!==focus){
     const point=project(wave.location);
-    ctx.beginPath();ctx.arc(...point,2*dpr,0,Math.PI*2);ctx.fillStyle='#fff4cd55';ctx.fill();
+    ctx.beginPath();ctx.arc(...point,2*dpr,0,Math.PI*2);ctx.fillStyle='#e5fff955';ctx.fill();
    }
   }
   if(focus&&(!reduced.matches||focus.arrived)){
    const point=project(focus.location);
-   ctx.beginPath();ctx.arc(...point,5*dpr,0,Math.PI*2);ctx.fillStyle='#fff4cd';ctx.fill();
-   ctx.beginPath();ctx.arc(...point,8*dpr,0,Math.PI*2);ctx.strokeStyle='#fff4cd';ctx.lineWidth=1.2*dpr;ctx.stroke();
+   ctx.beginPath();ctx.arc(...point,5*dpr,0,Math.PI*2);ctx.fillStyle='#e5fff9';ctx.fill();
+   ctx.beginPath();ctx.arc(...point,8*dpr,0,Math.PI*2);ctx.strokeStyle='#e5fff9';ctx.lineWidth=1.2*dpr;ctx.stroke();
   }
   ctx.restore();
  }

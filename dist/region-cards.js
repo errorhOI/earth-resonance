@@ -88,7 +88,7 @@
   if(scan!==null){
    ctx.beginPath();
    for(let y=0;y<N;y++){const v=y/(N-1),x=w/2+(scan-v)*sx,z=cy+(scan+v)*sy-brightnessAt(scan,v)*zh-1;y?ctx.lineTo(x,z):ctx.moveTo(x,z)}
-   ctx.strokeStyle='#f7ead0';ctx.lineWidth=1.5;ctx.stroke();
+   ctx.strokeStyle='#e5fff9';ctx.lineWidth=1.5;ctx.stroke();
   }
   c.dataset.scanFraction=scan===null?'':scan.toFixed(4);
   window.CardAtmosphere?.draw(ctx,entry,geometry,performance.now(),v.paused);
