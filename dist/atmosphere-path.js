@@ -38,9 +38,9 @@
    const dx=distance*k/4;el('text',{x:x(dx*1000),y:plot.bottom+20,'text-anchor':'middle'},dx.toFixed(0));
   }
   el('text',{x:plot.left,y:16},'Height · km');el('text',{x:(plot.left+plot.right)/2,y:320,'text-anchor':'middle'},'Distance along path · km');
-  el('path',{d:ray.path_m.map(([a,b],i)=>(i?'L':'M')+x(a)+' '+y(b)).join(' '),fill:'none',stroke:'#e1c687','stroke-width':2.2});
+  el('path',{d:ray.path_m.map(([a,b],i)=>(i?'L':'M')+x(a)+' '+y(b)).join(' '),fill:'none',stroke:'#76cfc3','stroke-width':2.2});
   const first=ray.path_m[0],last=ray.path_m.at(-1),returned=ray.status==='returned';
-  for(const [point,color] of [[first,'#e1c687'],[last,returned?'#81d5cd':'#b0b5ab']])el('circle',{cx:x(point[0]),cy:y(point[1]),r:4,fill:color});
+  for(const [point,color] of [[first,'#76cfc3'],[last,returned?'#81d5cd':'#b0b5ab']])el('circle',{cx:x(point[0]),cy:y(point[1]),r:4,fill:color});
   el('text',{x:x(first[0])+6,y:y(first[1])-9},'Sound starts');
   el('text',{x:x(last[0])-6,y:Math.max(22,y(last[1])-9),'text-anchor':'end'},returned?'Sound arrives':'Model ends here');
   dot=el('circle',{r:5,fill:'#fff',stroke:'#171916','stroke-width':1.5});

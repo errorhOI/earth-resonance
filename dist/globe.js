@@ -68,7 +68,7 @@ class EarthGlobe {
  drawOverlay(w,h,dpr,now){
    const ctx=this.overlay.getContext('2d');ctx.clearRect(0,0,w,h);if(this.flat){window.atmosphereCoverage?.draw(ctx,w,h,this);this.map?.draw(ctx,w,h,dpr);this.drawRegion(ctx,w,h,dpr);window.MapEndpoints?.draw(ctx,w,h,dpr,this,window.regionSelection,currentRay);return;}
   const cx=w/2,cy=h/2,r=this.radius;ctx.lineWidth=dpr*.75;
-  const ring=r+8*dpr;ctx.beginPath();for(let i=0;i<=192;i++){const a=i/192*2*Math.PI;const sample=this.spectrum?.[i%128]||0;const rr=ring+sample/255*20*dpr;const x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.strokeStyle=this.spectrum?'rgba(211,190,142,.65)':'rgba(165,164,155,.18)';ctx.stroke();
+  const ring=r+8*dpr;ctx.beginPath();for(let i=0;i<=192;i++){const a=i/192*2*Math.PI;const sample=this.spectrum?.[i%128]||0;const rr=ring+sample/255*20*dpr;const x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.strokeStyle=this.spectrum?'rgba(118,207,195,.65)':'rgba(165,164,155,.18)';ctx.stroke();
   this.map?.draw(ctx,w,h,dpr);
   this.drawRegion(ctx,w,h,dpr);
  }
@@ -76,12 +76,12 @@ class EarthGlobe {
   const b=this.regionBox;if(!b)return;
   const project=(u,v)=>this.map.project(90-v*180,u*360-180,1.002,w,h);
   const line=points=>{ctx.beginPath();let last=null;for(const p of points){const q=project(...p);if(!q.visible){last=null;continue}if(last)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);last=q}ctx.stroke()};
-  ctx.strokeStyle='#e7d29b';ctx.lineWidth=1.5*dpr;ctx.setLineDash([5*dpr,4*dpr]);
+  ctx.strokeStyle='#a8e4dc';ctx.lineWidth=1.5*dpr;ctx.setLineDash([5*dpr,4*dpr]);
   for(const [a,z] of [[[b.left,b.top],[b.right,b.top]],[[b.right,b.top],[b.right,b.bottom]],[[b.right,b.bottom],[b.left,b.bottom]],[[b.left,b.bottom],[b.left,b.top]]]){
    const points=[];for(let i=0;i<=40;i++)points.push([a[0]+(z[0]-a[0])*i/40,a[1]+(z[1]-a[1])*i/40]);line(points)
   }ctx.setLineDash([]);
   const fraction=SoundTiming.scan(window.soundLabController?.playback?.(),window.regionSelection);
-  if(fraction!==null){const u=b.left+(b.right-b.left)*fraction;ctx.strokeStyle='#f7ead0';ctx.lineWidth=2*dpr;line([[u,b.top],[u,b.bottom]])}
+  if(fraction!==null){const u=b.left+(b.right-b.left)*fraction;ctx.strokeStyle='#e5fff9';ctx.lineWidth=2*dpr;line([[u,b.top],[u,b.bottom]])}
  }
 }
 window.EarthGlobe=EarthGlobe;
