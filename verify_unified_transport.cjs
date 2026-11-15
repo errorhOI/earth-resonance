@@ -19,13 +19,13 @@ class Element{
   async playMelody(steps,bpm,cb){events.push('melody');busy=true;done=cb;return true}};
  const scope={window:{soundLabController:sound,addEventListener:(name,fn)=>listeners[name]=fn},
   document:{getElementById:$,createElement:tag=>Object.assign(new Element(),{tag}),addEventListener(){}},
-  localStorage:{getItem:()=>null,setItem(){}},regionCards:{list:()=>regions,show(){},highlight(){}},
+  localStorage:{getItem:()=>process.argv[2]||'melody',setItem(){throw Error('Playback mode must not overwrite saved settings')}},regionCards:{list:()=>regions,show(){},highlight(){}},
   regionPicker:{async activate(r){scope.window.regionSelection=r;events.push(r.cardId)}},
   soundLabController:sound,MelodyEditor:{resolve:rs=>rs,bpm:48},AtmosphereGeo:{coordinate:()=>''},NodeScore:{note:()=>''},
   oceanVideo,aerosolVideo,currentVideo:oceanVideo,setVisualStatus:message=>{throw Error(message)},requestAnimationFrame(){}};
  vm.createContext(scope);vm.runInContext(read('music-nodes.js'),scope);
  const seq=scope.window.musicSequence;
- assert.equal($('nodeMode').value,'single');scope.window.regionSelection=regions[1];
+ assert.equal($('nodeMode').value,'single','Page loads in One region even with a previous saved playback mode');scope.window.regionSelection=regions[1];
  await $('play').onclick();assert.deepEqual(events,[2,'scan'],'One region uses the active card');
  done();await settle();assert(!seq.running,'Loop off stops after one selected region');
  assert(oceanVideo.paused&&aerosolVideo.paused,'Stop freezes imagery');

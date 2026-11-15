@@ -29,8 +29,9 @@ window.MusicNodeSequence=MusicNodeSequence;
 (() => {
  const $=id=>document.getElementById(id),strip=$('musicNodes'),play=$('play'),stop=$('stop'),loop=$('loop'),status=$('nodeStatus'),mode=$('nodeMode');
  let signature='',sequence;
- try{const saved=localStorage.getItem('cosmic-siblings.node-mode');mode.value=['single','order','together','melody'].includes(saved)?saved:'single'}catch{}
- mode.onchange=()=>{sequence.stop();try{localStorage.setItem('cosmic-siblings.node-mode',mode.value)}catch{}signature='';sync()};
+ // Playback mode is session-only: every page load starts with one region.
+ mode.value='single';
+ mode.onchange=()=>{sequence.stop();signature='';sync()};
  function paint(){
   const playback=window.soundLabController?.playback(),melody=mode.value==='melody';
   const current=sequence?.running?(melody?playback?.colorSample?.cardId:sequence.order[sequence.index]?.cardId):null;
