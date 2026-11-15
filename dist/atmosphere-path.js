@@ -47,7 +47,7 @@
   $('simplePathHeight').textContent=(Math.max(...ray.path_m.map(p=>p[1]))/1000).toFixed(1)+' km';
   marker();
  }
- $('pathSources').onclick=()=>{dialog.close();$('about').click()};
+ $('pathSources').onclick=()=>{dialog.close();window.openSourceDetails()};
  $('pathMap').onclick=()=>{dialog.close();$('flatView').click();$('globe').focus()};
  new MutationObserver(()=>{if(dialog.open)build()}).observe(dialog,{attributes:true,attributeFilter:['open']});
  window.addEventListener('atmosphere-selected',()=>{if(dialog.open)build()});
