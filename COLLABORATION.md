@@ -38,7 +38,7 @@ Open a pull request from `ui-crystal` into `main` to review the UI work. After m
 
 ## Identity
 
-Git's commit name/email and the GitHub login used to push are different things. This computer's practice push uses the owner's existing credential. Crystal's checkout records her explicitly requested contributor identity with a GitHub noreply email. On her own computer she should sign in to GitHub herself before pushing; no password or token belongs in the repository.
+Git's commit name/email and the GitHub login used to push are different things. The initial practice used the owner's credential, including the first UI handoff note. On 15 November 2026 Crystal signed in separately through Git Credential Manager. Her checkout now selects `jamesgoime-lgtm` for pushes, while Wen Han's checkout selects `errorhOI`. No password or token belongs in the repository.
 
 ## Repeating this on Crystal's computer
 
@@ -67,3 +67,9 @@ Crystal maintains the layout and labels. Keep headings short, controls readable,
 Useful files: `dist/index.html`, `dist/style.css`, and `dist/region-cards.css`. Coordinate changes to `dist/region-cards.js` with Wen Han because it includes both drawing and behaviour.
 
 This handoff note is a new practice contribution, not evidence of who authored the earlier imported application.
+
+## Assisted collaboration on 15 November 2026
+
+Wen Han's `main` branch adds the audio gain handling, output peak protection and volume persistence. Crystal's `ui-crystal` branch pulls that change, then extends the visible volume slider to 200%. Both changes were implemented with Codex assistance at the team's request. These current commits demonstrate a real branch handoff; they do not reattribute earlier work or imply independent development by Crystal.
+
+The workflow is: owner pushes the audio change, UI branch pulls it, UI branch pushes its slider change through Crystal's account, then main merges that change and both checkouts pull again.
