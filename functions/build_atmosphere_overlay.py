@@ -9,7 +9,7 @@ from profile_service import load_fields
 from build_demo import height_profile
 from ray_model import effective_speed, trace
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 BEARINGS = [90, 270, 0, 180]
 ANGLES = [5, 10, 15, 20, 25, 30]
 
@@ -48,8 +48,8 @@ def main():
                   time='2025-01-01T01:30:00Z', grid='4 degrees latitude by 5 degrees longitude',
                   model='Same trace() as profile_service; highest layer center below 60 km; 2000 km range limit.',
                   source='NASA MERRA-2 regridded by GEOS-Chem; T/QV/PS interpolated 00-03 UTC, U/V 00-03 mean.',
-                  fields_sha256=digest.hexdigest(), ray_model_sha256=hashlib.sha256((ROOT/'ray_model.py').read_bytes()).hexdigest())
-    target = ROOT/'dist/atmosphere-coverage.json'
+                  fields_sha256=digest.hexdigest(), ray_model_sha256=hashlib.sha256((ROOT/'functions/ray_model.py').read_bytes()).hexdigest())
+    target = ROOT/'functions/atmosphere-coverage.json'
     target.write_text(json.dumps(result, separators=(',', ':'), allow_nan=False), encoding='utf-8')
     print(json.dumps(dict(cells=len(coverage), available=sum(coverage), outcomes=counts,
                           seconds=round(time.perf_counter()-started, 2), bytes=target.stat().st_size)), flush=True)

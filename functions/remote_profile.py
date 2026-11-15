@@ -7,7 +7,7 @@ import threading
 import time
 import requests
 
-ROOT=Path(__file__).resolve().parent/'data'
+ROOT=Path(__file__).resolve().parent.parent/'data'
 BASE='https://geos-chem.s3.amazonaws.com/GEOS_4x5/MERRA2/2025/01/'
 
 

@@ -127,3 +127,12 @@
 .card-footer{padding:12px 16px}
 .melody-step{min-width:169px;flex-basis:169px;padding:10px;gap:8px}
 @media(max-width:700px){#regionGrid{grid-template-columns:1fr}.region-surface,.single-region .region-surface{height:400px}}
+
+:root{--button-blue:#008cba}
+body button:not(.card-select):not(.surface-view){background:#fff;border:2px solid var(--button-blue);color:#111;text-align:center;text-decoration:none;transition:background-color .4s,color .4s,border-color .4s}
+body button:not(.card-select):not(.surface-view):enabled:hover,body button:not(.card-select):not(.surface-view):focus-visible{background:var(--button-blue);color:#fff}
+body button:not(.card-select):not(.surface-view).active,body button.music-node.playing{background:var(--button-blue);border-color:var(--button-blue);color:#fff}
+body button.music-node small{color:#46545a}
+body button.music-node.playing small,body button.music-node:hover small{color:#fff}
+body button:focus-visible{outline-color:var(--button-blue)}
+@media(prefers-reduced-motion:reduce){body button{transition:none!important}}

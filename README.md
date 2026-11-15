@@ -1,6 +1,8 @@
-# Earth / Resonance
+# Remix Earth
 
 Cosmic Siblings: Hoi Wen Han and Hoi Shao Xuan Crystal.
+
+Code: `ui/` contains the page, styles, and images; `functions/` contains JavaScript and Python logic. Root startup files launch the app.
 
 Turn the changing colors of NASA ocean and aerosol imagery into music. Select regions, choose an instrument, and explore a simulated sound path through the atmosphere.
 

@@ -10,7 +10,7 @@ from build_demo import height_profile
 from atmospheric_layers import diagnose
 from ray_model import effective_speed, trace
 
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parent.parent
 LOCK=threading.Lock()
 FIELDS=None
 

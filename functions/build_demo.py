@@ -10,7 +10,7 @@ import soundfile as sf
 from ray_model import effective_speed, trace, verify
 from atmospheric_layers import diagnose, METHOD
 
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parent.parent
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -36,7 +36,7 @@ def main():
     raw=json.loads(raw_path.read_text())
     assert raw['status']=='real_data_extracted'
     grid=json.loads((ROOT/'data/vertical-grid.json').read_text())
-    dist=ROOT/'dist';(dist/'audio').mkdir(exist_ok=True)
+    dist=ROOT/'functions';(dist/'audio').mkdir(exist_ok=True)
     profiles=[]
     for p in raw['profiles']:
         t,q,u,v=[np.asarray(p[k],float) for k in ['T','QV','U','V']]
