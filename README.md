@@ -6,9 +6,9 @@ Pick a patch of NASA ocean or aerosol imagery and hear its colors as musical not
 
 ## See the app
 
-Choose a region on the map. Its changing colors become musical notes.
+Select a region, then press Play. Silent demo:
 
-![Ocean map with a selected patch and modeled sound start and arrival markers](docs/media/map-selection.png)
+![Silent demo showing how to select a region and play its colors as notes](docs/media/select-region-and-play.gif)
 
 Compare places side by side. The peaks represent image brightness, not mountains.
 
